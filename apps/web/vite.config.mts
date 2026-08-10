@@ -18,7 +18,6 @@ export default defineConfig(() => ({
   },
   plugins: [
     tailwindcss(),
-    ,
     react(),
     nxViteTsPaths(),
     nxCopyAssetsPlugin(["*.md"]),

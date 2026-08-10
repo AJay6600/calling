@@ -1,0 +1,44 @@
+{
+  "name": "backend",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "targets": {
+    "start": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/backend"
+      },
+      "configurations": {
+        "local": {
+          "command": "docker compose -p ai-calling-platform -f compose.local.yml up -d"
+        }
+      },
+      "defaultConfiguration": "local"
+    },
+    "stop": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/backend"
+      },
+      "configurations": {
+        "local": {
+          "command": "docker compose -p ai-calling-platform -f compose.local.yml down"
+        }
+      },
+      "defaultConfiguration": "local"
+    },
+    "destroy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/backend"
+      },
+      "configurations": {
+        "local": {
+          "command": "docker compose -p ai-calling-platform -f compose.local.yml down -v"
+        }
+      },
+      "defaultConfiguration": "local"
+    }
+  },
+  "tags": []
+}

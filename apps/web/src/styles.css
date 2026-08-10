@@ -1,2 +1,231 @@
-/* You can add global styles to this file, and also import other style files */
-@import "tailwindcss";
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+}
+
+@utility glass-panel {
+  background: var(--gradient-panel);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-panel);
+  backdrop-filter: blur(12px);
+}
+
+@utility text-gradient {
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility grid-glow {
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: var(--gradient-radial);
+  }
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  --radius: 0.875rem;
+  --background: #080d18;
+  --foreground: #f2f5f9;
+  --surface: #101624;
+  --surface-2: #19202f;
+  --card: #101624;
+  --card-foreground: #f2f5f9;
+  --popover: #101624;
+  --popover-foreground: #f2f5f9;
+  --primary: #00c391;
+  --primary-foreground: #02140d;
+  --secondary: #1d2433;
+  --secondary-foreground: #ebeff2;
+  --muted: #19202f;
+  --muted-foreground: #9099a8;
+  --accent: #6875f6;
+  --accent-foreground: #f6f9fc;
+  --destructive: #e93a4e;
+  --destructive-foreground: #f6f9fc;
+  --success: #24c27d;
+  --success-foreground: #03130b;
+  --warning: #efad32;
+  --warning-foreground: #211201;
+  --info: #16a4e2;
+  --border: #272e3c;
+  --input: #272e3c;
+  --ring: #00c391;
+  --chart-1: #00c391;
+  --chart-2: #6875f6;
+  --chart-3: #efad32;
+  --chart-4: #16a4e2;
+  --chart-5: #dd56b8;
+  --sidebar: #0d121e;
+  --sidebar-foreground: #d9dfe6;
+  --sidebar-primary: #00c391;
+  --sidebar-primary-foreground: #02140d;
+  --sidebar-accent: #1b2130;
+  --sidebar-accent-foreground: #f2f5f9;
+  --sidebar-border: #242b3a;
+  --sidebar-ring: #00c391;
+
+  --gradient-accent: linear-gradient(100deg, #51e1b3, #00b8d8 55%, #8a7bff);
+  --gradient-panel: linear-gradient(160deg, #161d2be6, #0e1420d9);
+  --gradient-radial: radial-gradient(
+    120% 90% at 15% 0%,
+    #00c39124,
+    transparent 60%
+  );
+  --shadow-panel: 0 1px 0 0 #ffffff0a inset, 0 18px 40px -24px #01030ce6;
+  --shadow-glow: 0 0 0 1px #00c3914c, 0 14px 40px -14px #00c39173;
+}
+
+.dark {
+  --background: #00070c;
+  --foreground: #ffeeea;
+  --card: #061c1f;
+  --card-foreground: #ffeeea;
+  --popover: #061c1f;
+  --popover-foreground: #ffeeea;
+  --primary: #ffdfdc;
+  --primary-foreground: #061c1f;
+  --secondary: #1c2c2f;
+  --secondary-foreground: #ffeeea;
+  --muted: #1c2c2f;
+  --muted-foreground: #a5a0a0;
+  --accent: #1c2c2f;
+  --accent-foreground: #ffeeea;
+  --destructive: #fd6580;
+  --destructive-foreground: #ffeeea;
+  --border: #fff3ee1a;
+  --input: #fff3ee26;
+  --ring: #797171;
+  --chart-1: #0086a2;
+  --chart-2: #9da386;
+  --chart-3: #ff7d7b;
+  --chart-4: #0d98c0;
+  --chart-5: #f33e71;
+  --sidebar: #061c1f;
+  --sidebar-foreground: #ffeeea;
+  --sidebar-primary: #0086a2;
+  --sidebar-primary-foreground: #ffeeea;
+  --sidebar-accent: #1c2c2f;
+  --sidebar-accent-foreground: #ffeeea;
+  --sidebar-border: #fff3ee1a;
+  --sidebar-ring: #797171;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+}
+
+/* Ant Design Menu dark sidebar custom overrides */
+.ant-menu-dark,
+.ant-menu-dark .ant-menu-sub,
+.ant-menu-dark.ant-menu-sub,
+.ant-menu-dark .ant-menu-inline.ant-menu-sub {
+  background: transparent !important;
+}
+
+.ant-menu-dark:not(.ant-menu-inline-collapsed) .ant-menu-sub .ant-menu-item {
+  padding-left: 44px !important;
+}
+
+.ant-menu-dark .ant-menu-item,
+.ant-menu-dark .ant-menu-submenu-title {
+  transition: background-color 0.2s ease, color 0.2s ease !important;
+}
+
+.ant-menu-dark .ant-menu-item:hover,
+.ant-menu-dark .ant-menu-submenu-title:hover {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+.ant-menu-dark .ant-menu-item-selected {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  color: var(--primary) !important;
+}
+
+.ant-menu-dark .ant-menu-item-selected .ant-menu-title-content,
+.ant-menu-dark .ant-menu-item-selected .ant-menu-title-content a,
+.ant-menu-dark .ant-menu-item-selected .ant-menu-item-icon,
+.ant-menu-dark .ant-menu-item-selected svg {
+  color: var(--primary) !important;
+}
+
+
+
+
