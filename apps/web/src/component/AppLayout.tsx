@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Layout, Menu, Typography, Button, type MenuProps } from 'antd';
+import { Layout, Menu, Typography, Button, Avatar, Tooltip, type MenuProps } from 'antd';
 import {
   FiGrid,
   FiRadio,
@@ -9,8 +9,10 @@ import {
   FiBarChart2,
   FiCreditCard,
   FiPhoneOutgoing,
+  FiLogOut,
 } from 'react-icons/fi';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from 'react-oidc-context';
 
 const { Sider, Header, Content } = Layout;
 const { Text, Title } = Typography;
@@ -172,10 +174,31 @@ export const AppLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const auth = useAuth();
 
   const handleMenuNavigate: MenuProps['onClick'] = (info) => {
     navigate(info.key);
   };
+
+  const handleSignOut = async () => {
+    try {
+      await auth.signoutRedirect();
+    } catch {
+      await auth.removeUser();
+    }
+  };
+
+  const userProfile = auth.user?.profile;
+  const firstName = userProfile?.given_name || '';
+  const lastName = userProfile?.family_name || '';
+  const computedFullName = [firstName, lastName].filter(Boolean).join(' ');
+  const fullName =
+    computedFullName ||
+    userProfile?.name ||
+    userProfile?.preferred_username ||
+    userProfile?.email ||
+    'User';
+  const email = userProfile?.email || '';
 
   const menuItems = buildMenuItems(location.pathname);
   const headerMeta =
@@ -259,17 +282,50 @@ export const AppLayout = () => {
       </Sider>
 
       <Layout className="h-full min-w-0 bg-background">
-        <Header className="flex h-auto shrink-0 flex-col justify-center border-b border-border bg-background! px-8 py-4">
-          <Title
-            level={3}
-            className="m-0! text-foreground!"
-            style={{ fontFamily: 'var(--font-display)', fontWeight: 600 }}
-          >
-            {headerMeta.title}
-          </Title>
-          <Text className="text-sm text-muted-foreground opacity-70">
-            {headerMeta.subtext}
-          </Text>
+        <Header className="flex h-auto shrink-0 items-center justify-between border-b border-border bg-background! px-8 py-4">
+          <div className="flex flex-col">
+            <Title
+              level={3}
+              className="m-0! text-foreground!"
+              style={{ fontFamily: 'var(--font-display)', fontWeight: 600 }}
+            >
+              {headerMeta.title}
+            </Title>
+            <Text className="text-sm text-muted-foreground opacity-70">
+              {headerMeta.subtext}
+            </Text>
+          </div>
+
+          <div className="flex items-center gap-3 rounded-xl border border-border/80 bg-secondary/50 px-3.5 py-1.5 backdrop-blur-md shadow-sm transition-all hover:border-primary/40 hover:bg-secondary/80">
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-sm shadow-sm shadow-primary/20">
+              {(firstName || fullName).charAt(0).toUpperCase()}
+            </div>
+            <div className="flex flex-col min-w-0">
+              <span className="text-sm font-semibold text-white tracking-tight leading-tight truncate">
+                {fullName}
+              </span>
+              {email && (
+                <span className="text-xs text-primary/90 font-medium leading-tight truncate">
+                  {email}
+                </span>
+              )}
+            </div>
+            <div className="h-6 w-px bg-border/80 mx-1" />
+
+            <Button
+              type="text"
+              icon={
+                <FiLogOut
+                  size={17}
+                  className="text-primary/90 transition-all text-primary! duration-200 group-hover:text-destructive!"
+                />
+              }
+              onClick={handleSignOut}
+              aria-label="Sign out"
+              className="group flex size-8 shrink-0 items-center justify-center rounded-lg p-0 transition-all duration-200 hover:bg-destructive/20"
+            />
+
+          </div>
         </Header>
 
         <Content className="relative flex flex-1 flex-col items-center justify-center overflow-y-auto bg-background bg-[radial-gradient(120%_90%_at_15%_0%,#00C39124,transparent_60%)] p-6">
