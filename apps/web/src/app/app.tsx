@@ -21,7 +21,9 @@ export const App = () => {
   const auth = useAuth();
 
   useEffect(() => {
-    registerAuthTokenInterceptor(() => auth.user?.access_token);
+    registerAuthTokenInterceptor(
+      () => auth.user?.id_token ?? auth.user?.access_token,
+    );
     if (auth.isAuthenticated && auth.user) {
       console.log('Logged in user details:', auth.user);
     }

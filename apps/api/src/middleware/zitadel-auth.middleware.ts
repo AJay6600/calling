@@ -56,7 +56,8 @@ export const zitadelAuthMiddleware = async (
     };
 
     next();
-  } catch {
+  } catch (error) {
+    console.error('[auth] JWT verification failed:', error);
     res.status(401).json({ message: 'Invalid or expired access token' });
   }
 };

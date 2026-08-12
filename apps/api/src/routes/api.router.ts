@@ -3,6 +3,7 @@ import {
   zitadelAuthMiddleware,
   type AuthenticatedRequestType,
 } from '../middleware/zitadel-auth.middleware';
+import { callsRouter } from './calls.router';
 
 export const apiRouter = Router();
 
@@ -20,3 +21,6 @@ apiRouter.get(
     });
   },
 );
+
+apiRouter.use('/calls', callsRouter);
+
