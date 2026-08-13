@@ -5,6 +5,7 @@ export type AuthenticatedRequestType = Request & {
   auth?: {
     userId: string;
     orgId: string | null;
+    orgName: string | null;
     rawClaims: Record<string, unknown>;
   };
 };
@@ -46,12 +47,16 @@ export const zitadelAuthMiddleware = async (
       return;
     }
 
-    const rawOrgId = payload['urn:zitadel:iam:org:id'];
+    const rawOrgId = payload['urn:zitadel:iam:user:resourceowner:id'];
     const orgId = typeof rawOrgId === 'string' ? rawOrgId : null;
+
+    const rawOrgName = payload['urn:zitadel:iam:user:resourceowner:name'];
+    const orgName = typeof rawOrgName === 'string' ? rawOrgName : null;
 
     req.auth = {
       userId,
       orgId,
+      orgName,
       rawClaims: payload,
     };
 

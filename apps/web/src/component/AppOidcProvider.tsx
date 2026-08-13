@@ -25,7 +25,7 @@ const oidcConfig = {
   client_id: zitadelClientId,
   redirect_uri: zitadelRedirectUri,
   post_logout_redirect_uri: zitadelPostLogoutRedirectUri,
-  scope: 'openid profile email offline_access',
+  scope: 'openid profile email offline_access urn:zitadel:iam:user:resourceowner',
   automaticSilentRenew: true,
   includeIdTokenInSilentRenew: false,
   loadUserInfo: true,
