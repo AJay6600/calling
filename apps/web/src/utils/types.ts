@@ -9,3 +9,11 @@ export type ApiErrorResponseType = {
   message: string;
   error: string;
 };
+
+export type OrganizationType = {
+  id: string;
+  zitadel_org_id: string;
+  name: string;
+  created_at?: string;
+  updated_at?: string;
+};

@@ -1,8 +1,10 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ConfigProvider, App as AntdApp } from 'antd';
+import { ApolloProvider } from '@apollo/client/react';
 import { App } from './app/app';
 import { AppOidcProvider } from './component';
+import { apolloClient } from './lib/apolloClient';
 import 'antd/dist/reset.css';
 import './styles.css';
 import getAntdThemeConfig from './utils/antd-theme';
@@ -23,14 +25,16 @@ const rootStyles = getComputedStyle(document.documentElement);
 
 createRoot(rootElement).render(
   <StrictMode>
-    <BrowserRouter>
-      <ConfigProvider theme={getAntdThemeConfig(rootStyles)}>
-        <AppOidcProvider>
-          <AntdApp>
-            <App />
-          </AntdApp>
-        </AppOidcProvider>
-      </ConfigProvider>
-    </BrowserRouter>
+    <ApolloProvider client={apolloClient}>
+      <BrowserRouter>
+        <ConfigProvider theme={getAntdThemeConfig(rootStyles)}>
+          <AppOidcProvider>
+            <AntdApp>
+              <App />
+            </AntdApp>
+          </AppOidcProvider>
+        </ConfigProvider>
+      </BrowserRouter>
+    </ApolloProvider>
   </StrictMode>,
 );

@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS public.leads CASCADE;
+DROP TABLE IF EXISTS public.campaigns CASCADE;
+DROP TABLE IF EXISTS public.users CASCADE;

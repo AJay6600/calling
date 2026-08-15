@@ -8,7 +8,7 @@ This library contains multiple sub-folders eg: `entities`, `dto`, `enums`, `util
 
 | Sub-folder | Description |
 | --- | --- |
-| entities | Shared domain types mirroring the Prisma schema (Organization, Lead, Campaign, CallLog, Agent, etc.), consumed by both frontend and backend |
+| entities | Shared domain types mirroring the database schema (Organization, Lead, Campaign, CallLog, Agent, etc.), consumed by both frontend and backend |
 | dto | Request/response payload shapes shared between `web` and `api` (e.g. `CreateCampaignPayload`, `CallDispositionResponse`) |
 | enums | Shared enums/unions (e.g. `LeadStatus`, `CampaignStatus`, `Disposition`) so both apps stay in sync on allowed values |
 | utils | Low-level, framework-agnostic utility functions (formatting, validation helpers) shared across apps |

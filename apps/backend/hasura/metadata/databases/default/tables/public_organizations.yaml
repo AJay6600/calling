@@ -1,0 +1,19 @@
+table:
+  name: organizations
+  schema: public
+select_permissions:
+  - role: anonymous
+    permission:
+      columns: '*'
+      filter: {}
+insert_permissions:
+  - role: anonymous
+    permission:
+      check: {}
+      columns: '*'
+update_permissions:
+  - role: anonymous
+    permission:
+      columns: '*'
+      filter: {}
+      check: {}
