@@ -1,1 +1,1 @@
-export * from './getOrganizationByZitadelId';
+export * from './getOrganizationWithUser';

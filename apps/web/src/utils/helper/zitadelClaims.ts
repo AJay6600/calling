@@ -17,3 +17,19 @@ export const getZitadelOrgIdFromProfile = (
 
   return orgId;
 };
+
+export const getZitadelUserIdFromProfile = (
+  profile: Record<string, unknown> | undefined,
+): string | undefined => {
+  if (profile === undefined) {
+    return undefined;
+  }
+
+  const sub = profile['sub'];
+
+  if (typeof sub !== 'string' || sub === '') {
+    return undefined;
+  }
+
+  return sub;
+};

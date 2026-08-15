@@ -17,3 +17,10 @@ export type OrganizationType = {
   created_at?: string;
   updated_at?: string;
 };
+
+export type UserType = {
+  id: string;
+  zitadel_user_id: string;
+  email: string;
+  organization_id: string;
+};
