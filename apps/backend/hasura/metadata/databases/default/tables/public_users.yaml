@@ -1,0 +1,40 @@
+table:
+  name: users
+  schema: public
+insert_permissions:
+  - role: anonymous
+    permission:
+      check: {}
+      columns:
+        - created_at
+        - id
+        - name
+        - organization_id
+        - updated_at
+        - zitadel_org_id
+    comment: ""
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - name
+        - zitadel_org_id
+        - created_at
+        - updated_at
+        - id
+        - organization_id
+      filter: {}
+    comment: ""
+update_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - name
+        - zitadel_org_id
+        - created_at
+        - updated_at
+        - id
+        - organization_id
+      filter: {}
+      check: null
+    comment: ""

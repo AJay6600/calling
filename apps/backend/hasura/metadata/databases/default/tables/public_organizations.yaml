@@ -1,16 +1,24 @@
 table:
   name: organizations
   schema: public
-select_permissions:
-  - role: anonymous
-    permission:
-      columns: '*'
-      filter: {}
+array_relationships:
+  - name: users
+    using:
+      foreign_key_constraint_on:
+        column: organization_id
+        table:
+          name: users
+          schema: public
 insert_permissions:
   - role: anonymous
     permission:
       check: {}
       columns: '*'
+select_permissions:
+  - role: anonymous
+    permission:
+      columns: '*'
+      filter: {}
 update_permissions:
   - role: anonymous
     permission:
