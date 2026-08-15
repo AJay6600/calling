@@ -85,6 +85,24 @@ apps/backend/hasura/
 4. Track the table in Hasura Console or add metadata YAML under `metadata/databases/default/tables/`
 5. Apply metadata: `yarn nx run backend:hasura-metadata-apply`
 
+### Squashing migrations
+
+When iterative schema changes result in many migration files, squash them into a single consolidated migration file:
+
+1. Ensure Hasura and Postgres are running (`yarn nx run backend:start:local`).
+2. Run the squash command:
+   ```bash
+   yarn nx run backend:hasura-squash
+   ```
+   *Alternatively, run Hasura CLI directly specifying starting version:*
+   ```bash
+   hasura migrate squash --from 1700000000000 --name init_schema --project apps/backend/hasura --database-name default --delete-source
+   ```
+3. Check migration status to verify DB alignment:
+   ```bash
+   yarn nx run backend:hasura-status
+   ```
+
 ---
 
 ## Environment variables

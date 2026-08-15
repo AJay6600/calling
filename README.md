@@ -63,6 +63,7 @@ yarn nx run web:serve    # Dashboard :4200
 ```bash
 yarn nx run backend:hasura-console   # open Hasura Console (http://localhost:8080/console)
 yarn nx run backend:hasura-status    # check migration status
+yarn nx run backend:hasura-squash    # squash iterative migrations into 1 clean migration
 yarn nx run backend:stop:local       # stop containers
 yarn nx run backend:destroy:local    # stop + wipe volumes (clean DB)
 ```

@@ -67,6 +67,140 @@ export type String_Comparison_Exp = {
   _similar?: InputMaybe<Scalars['String']['input']>;
 };
 
+/** columns and relationships of "agent_language_enum" */
+export type Agent_Language_Enum = {
+  __typename?: 'agent_language_enum';
+  id: Scalars['String']['output'];
+  label: Scalars['String']['output'];
+};
+
+/** aggregated selection of "agent_language_enum" */
+export type Agent_Language_Enum_Aggregate = {
+  __typename?: 'agent_language_enum_aggregate';
+  aggregate?: Maybe<Agent_Language_Enum_Aggregate_Fields>;
+  nodes: Array<Agent_Language_Enum>;
+};
+
+/** aggregate fields of "agent_language_enum" */
+export type Agent_Language_Enum_Aggregate_Fields = {
+  __typename?: 'agent_language_enum_aggregate_fields';
+  count: Scalars['Int']['output'];
+  max?: Maybe<Agent_Language_Enum_Max_Fields>;
+  min?: Maybe<Agent_Language_Enum_Min_Fields>;
+};
+
+
+/** aggregate fields of "agent_language_enum" */
+export type Agent_Language_Enum_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Agent_Language_Enum_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** Boolean expression to filter rows from the table "agent_language_enum". All fields are combined with a logical 'AND'. */
+export type Agent_Language_Enum_Bool_Exp = {
+  _and?: InputMaybe<Array<Agent_Language_Enum_Bool_Exp>>;
+  _not?: InputMaybe<Agent_Language_Enum_Bool_Exp>;
+  _or?: InputMaybe<Array<Agent_Language_Enum_Bool_Exp>>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  label?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "agent_language_enum" */
+export enum Agent_Language_Enum_Constraint {
+  /** unique or primary key constraint on columns "id" */
+  AgentLanguageEnumPkey = 'agent_language_enum_pkey'
+}
+
+/** input type for inserting data into table "agent_language_enum" */
+export type Agent_Language_Enum_Insert_Input = {
+  id?: InputMaybe<Scalars['String']['input']>;
+  label?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** aggregate max on columns */
+export type Agent_Language_Enum_Max_Fields = {
+  __typename?: 'agent_language_enum_max_fields';
+  id?: Maybe<Scalars['String']['output']>;
+  label?: Maybe<Scalars['String']['output']>;
+};
+
+/** aggregate min on columns */
+export type Agent_Language_Enum_Min_Fields = {
+  __typename?: 'agent_language_enum_min_fields';
+  id?: Maybe<Scalars['String']['output']>;
+  label?: Maybe<Scalars['String']['output']>;
+};
+
+/** response of any mutation on the table "agent_language_enum" */
+export type Agent_Language_Enum_Mutation_Response = {
+  __typename?: 'agent_language_enum_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int']['output'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Agent_Language_Enum>;
+};
+
+/** on_conflict condition type for table "agent_language_enum" */
+export type Agent_Language_Enum_On_Conflict = {
+  constraint: Agent_Language_Enum_Constraint;
+  update_columns?: Array<Agent_Language_Enum_Update_Column>;
+  where?: InputMaybe<Agent_Language_Enum_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "agent_language_enum". */
+export type Agent_Language_Enum_Order_By = {
+  id?: InputMaybe<Order_By>;
+  label?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: agent_language_enum */
+export type Agent_Language_Enum_Pk_Columns_Input = {
+  id: Scalars['String']['input'];
+};
+
+/** select columns of table "agent_language_enum" */
+export enum Agent_Language_Enum_Select_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Label = 'label'
+}
+
+/** input type for updating data in table "agent_language_enum" */
+export type Agent_Language_Enum_Set_Input = {
+  id?: InputMaybe<Scalars['String']['input']>;
+  label?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Streaming cursor of the table "agent_language_enum" */
+export type Agent_Language_Enum_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Agent_Language_Enum_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Agent_Language_Enum_Stream_Cursor_Value_Input = {
+  id?: InputMaybe<Scalars['String']['input']>;
+  label?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** update columns of table "agent_language_enum" */
+export enum Agent_Language_Enum_Update_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Label = 'label'
+}
+
+export type Agent_Language_Enum_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Agent_Language_Enum_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: Agent_Language_Enum_Bool_Exp;
+};
+
 /** Boolean expression to compare columns of type "bpchar". All fields are combined with logical 'AND'. */
 export type Bpchar_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['bpchar']['input']>;
@@ -111,6 +245,10 @@ export enum Cursor_Ordering {
 /** mutation root */
 export type Mutation_Root = {
   __typename?: 'mutation_root';
+  /** delete data from the table: "agent_language_enum" */
+  delete_agent_language_enum?: Maybe<Agent_Language_Enum_Mutation_Response>;
+  /** delete single row from the table: "agent_language_enum" */
+  delete_agent_language_enum_by_pk?: Maybe<Agent_Language_Enum>;
   /** delete data from the table: "organizations" */
   delete_organizations?: Maybe<Organizations_Mutation_Response>;
   /** delete single row from the table: "organizations" */
@@ -119,6 +257,10 @@ export type Mutation_Root = {
   delete_users?: Maybe<Users_Mutation_Response>;
   /** delete single row from the table: "users" */
   delete_users_by_pk?: Maybe<Users>;
+  /** insert data into the table: "agent_language_enum" */
+  insert_agent_language_enum?: Maybe<Agent_Language_Enum_Mutation_Response>;
+  /** insert a single row into the table: "agent_language_enum" */
+  insert_agent_language_enum_one?: Maybe<Agent_Language_Enum>;
   /** insert data into the table: "organizations" */
   insert_organizations?: Maybe<Organizations_Mutation_Response>;
   /** insert a single row into the table: "organizations" */
@@ -127,6 +269,12 @@ export type Mutation_Root = {
   insert_users?: Maybe<Users_Mutation_Response>;
   /** insert a single row into the table: "users" */
   insert_users_one?: Maybe<Users>;
+  /** update data of the table: "agent_language_enum" */
+  update_agent_language_enum?: Maybe<Agent_Language_Enum_Mutation_Response>;
+  /** update single row of the table: "agent_language_enum" */
+  update_agent_language_enum_by_pk?: Maybe<Agent_Language_Enum>;
+  /** update multiples rows of table: "agent_language_enum" */
+  update_agent_language_enum_many?: Maybe<Array<Maybe<Agent_Language_Enum_Mutation_Response>>>;
   /** update data of the table: "organizations" */
   update_organizations?: Maybe<Organizations_Mutation_Response>;
   /** update single row of the table: "organizations" */
@@ -139,6 +287,18 @@ export type Mutation_Root = {
   update_users_by_pk?: Maybe<Users>;
   /** update multiples rows of table: "users" */
   update_users_many?: Maybe<Array<Maybe<Users_Mutation_Response>>>;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Agent_Language_EnumArgs = {
+  where: Agent_Language_Enum_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Agent_Language_Enum_By_PkArgs = {
+  id: Scalars['String']['input'];
 };
 
 
@@ -167,6 +327,20 @@ export type Mutation_RootDelete_Users_By_PkArgs = {
 
 
 /** mutation root */
+export type Mutation_RootInsert_Agent_Language_EnumArgs = {
+  objects: Array<Agent_Language_Enum_Insert_Input>;
+  on_conflict?: InputMaybe<Agent_Language_Enum_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Agent_Language_Enum_OneArgs = {
+  object: Agent_Language_Enum_Insert_Input;
+  on_conflict?: InputMaybe<Agent_Language_Enum_On_Conflict>;
+};
+
+
+/** mutation root */
 export type Mutation_RootInsert_OrganizationsArgs = {
   objects: Array<Organizations_Insert_Input>;
   on_conflict?: InputMaybe<Organizations_On_Conflict>;
@@ -191,6 +365,26 @@ export type Mutation_RootInsert_UsersArgs = {
 export type Mutation_RootInsert_Users_OneArgs = {
   object: Users_Insert_Input;
   on_conflict?: InputMaybe<Users_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Agent_Language_EnumArgs = {
+  _set?: InputMaybe<Agent_Language_Enum_Set_Input>;
+  where: Agent_Language_Enum_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Agent_Language_Enum_By_PkArgs = {
+  _set?: InputMaybe<Agent_Language_Enum_Set_Input>;
+  pk_columns: Agent_Language_Enum_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Agent_Language_Enum_ManyArgs = {
+  updates: Array<Agent_Language_Enum_Updates>;
 };
 
 
@@ -470,6 +664,12 @@ export type Organizations_Updates = {
 
 export type Query_Root = {
   __typename?: 'query_root';
+  /** fetch data from the table: "agent_language_enum" */
+  agent_language_enum: Array<Agent_Language_Enum>;
+  /** fetch aggregated fields from the table: "agent_language_enum" */
+  agent_language_enum_aggregate: Agent_Language_Enum_Aggregate;
+  /** fetch data from the table: "agent_language_enum" using primary key columns */
+  agent_language_enum_by_pk?: Maybe<Agent_Language_Enum>;
   /** fetch data from the table: "organizations" */
   organizations: Array<Organizations>;
   /** fetch aggregated fields from the table: "organizations" */
@@ -482,6 +682,29 @@ export type Query_Root = {
   users_aggregate: Users_Aggregate;
   /** fetch data from the table: "users" using primary key columns */
   users_by_pk?: Maybe<Users>;
+};
+
+
+export type Query_RootAgent_Language_EnumArgs = {
+  distinct_on?: InputMaybe<Array<Agent_Language_Enum_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Agent_Language_Enum_Order_By>>;
+  where?: InputMaybe<Agent_Language_Enum_Bool_Exp>;
+};
+
+
+export type Query_RootAgent_Language_Enum_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Agent_Language_Enum_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Agent_Language_Enum_Order_By>>;
+  where?: InputMaybe<Agent_Language_Enum_Bool_Exp>;
+};
+
+
+export type Query_RootAgent_Language_Enum_By_PkArgs = {
+  id: Scalars['String']['input'];
 };
 
 
@@ -532,6 +755,14 @@ export type Query_RootUsers_By_PkArgs = {
 
 export type Subscription_Root = {
   __typename?: 'subscription_root';
+  /** fetch data from the table: "agent_language_enum" */
+  agent_language_enum: Array<Agent_Language_Enum>;
+  /** fetch aggregated fields from the table: "agent_language_enum" */
+  agent_language_enum_aggregate: Agent_Language_Enum_Aggregate;
+  /** fetch data from the table: "agent_language_enum" using primary key columns */
+  agent_language_enum_by_pk?: Maybe<Agent_Language_Enum>;
+  /** fetch data from the table in a streaming manner: "agent_language_enum" */
+  agent_language_enum_stream: Array<Agent_Language_Enum>;
   /** fetch data from the table: "organizations" */
   organizations: Array<Organizations>;
   /** fetch aggregated fields from the table: "organizations" */
@@ -548,6 +779,36 @@ export type Subscription_Root = {
   users_by_pk?: Maybe<Users>;
   /** fetch data from the table in a streaming manner: "users" */
   users_stream: Array<Users>;
+};
+
+
+export type Subscription_RootAgent_Language_EnumArgs = {
+  distinct_on?: InputMaybe<Array<Agent_Language_Enum_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Agent_Language_Enum_Order_By>>;
+  where?: InputMaybe<Agent_Language_Enum_Bool_Exp>;
+};
+
+
+export type Subscription_RootAgent_Language_Enum_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Agent_Language_Enum_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Agent_Language_Enum_Order_By>>;
+  where?: InputMaybe<Agent_Language_Enum_Bool_Exp>;
+};
+
+
+export type Subscription_RootAgent_Language_Enum_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootAgent_Language_Enum_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Agent_Language_Enum_Stream_Cursor_Input>>;
+  where?: InputMaybe<Agent_Language_Enum_Bool_Exp>;
 };
 
 
