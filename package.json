@@ -3,7 +3,11 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "prepare": "husky"
+    "prepare": "husky",
+    "web:codegen": "nx run web:codegen",
+    "web:codegen-watch": "nx run web:codegen-watch",
+    "codegen": "nx run web:codegen",
+    "codegen-watch": "nx run web:codegen-watch"
   },
   "private": true,
   "dependencies": {
@@ -33,6 +37,10 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
+    "@graphql-codegen/cli": "^7.2.0",
+    "@graphql-codegen/typescript": "^6.1.0",
+    "@graphql-codegen/typescript-operations": "^6.1.6",
+    "@graphql-codegen/typescript-react-apollo": "^4.4.2",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.0",
     "@nx/eslint": "23.1.1",

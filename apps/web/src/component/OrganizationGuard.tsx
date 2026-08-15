@@ -1,25 +1,15 @@
 // apps/web/src/app/component/OrganizationGuard.tsx
 import type { ReactNode } from 'react';
 import { useAuth } from 'react-oidc-context';
-import { useQuery } from '@apollo/client/react';
 import { Alert, Button, Result, Spin } from 'antd';
-import { GET_ORGANIZATION_WITH_USER } from '../graphql/queries';
+import { useGetOrganizationWithUserQuery } from '../graphql';
 import {
   getZitadelOrgIdFromProfile,
   getZitadelUserIdFromProfile,
 } from '../utils';
-import type { OrganizationType, UserType } from '../utils/types';
 
 type OrganizationGuardPropsType = {
   children: ReactNode;
-};
-
-type OrganizationWithUsersType = OrganizationType & {
-  users: UserType[];
-};
-
-type GetOrganizationWithUserDataType = {
-  organizations: OrganizationWithUsersType[];
 };
 
 export const OrganizationGuard = ({ children }: OrganizationGuardPropsType) => {
@@ -28,7 +18,7 @@ export const OrganizationGuard = ({ children }: OrganizationGuardPropsType) => {
   const zitadelUserId = getZitadelUserIdFromProfile(auth.user?.profile);
 
   const { data, loading, error, refetch } =
-    useQuery<GetOrganizationWithUserDataType>(GET_ORGANIZATION_WITH_USER, {
+    useGetOrganizationWithUserQuery({
       variables: {
         zitadel_org_id: zitadelOrgId ?? '',
         zitadel_user_id: zitadelUserId ?? '',

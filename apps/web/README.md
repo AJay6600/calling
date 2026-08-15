@@ -20,6 +20,21 @@ Dashboard: http://localhost:4200
 
 Ensure Hasura is running and migrations are applied (see root `README.md`).
 
+## Code Generation for Queries & Mutations
+
+Whenever you add or edit a query or mutation in `src/graphql/`:
+
+1. Write your query/mutation in `src/graphql/queries/` or `src/graphql/mutations/`.
+2. Run code generation:
+   ```bash
+   yarn nx run web:codegen
+   yarn nx run web:codegen-watch  # watch mode for development
+   ```
+3. Import generated hooks/types from `src/graphql`:
+   ```tsx
+   import { useGetOrganizationWithUserQuery } from '../graphql';
+   ```
+
 ## Environment variables
 
 | Variable | Description |

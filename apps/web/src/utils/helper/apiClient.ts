@@ -42,6 +42,8 @@ const attachRequestInterceptor = () => {
 
     if (zitadelOrgId !== undefined && zitadelOrgId !== '') {
       config.headers[ZITADEL_ORG_ID_HEADER] = zitadelOrgId;
+      config.headers['x-hasura-org-id'] = zitadelOrgId;
+      config.headers['x-hasura-zitadel-org-id'] = zitadelOrgId;
     }
 
     return config;

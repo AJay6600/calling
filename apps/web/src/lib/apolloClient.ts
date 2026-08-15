@@ -45,6 +45,8 @@ const authLink = new ApolloLink((operation, forward) => {
 
   if (zitadelOrgId !== undefined && zitadelOrgId !== '') {
     requestHeaders[ZITADEL_ORG_ID_HEADER] = zitadelOrgId;
+    requestHeaders['x-hasura-org-id'] = zitadelOrgId;
+    requestHeaders['x-hasura-zitadel-org-id'] = zitadelOrgId;
   }
 
   operation.setContext(({ headers = {} }) => ({
@@ -73,6 +75,8 @@ const wsLink =
 
             if (zitadelOrgId !== undefined && zitadelOrgId !== '') {
               headers[ZITADEL_ORG_ID_HEADER] = zitadelOrgId;
+              headers['x-hasura-org-id'] = zitadelOrgId;
+              headers['x-hasura-zitadel-org-id'] = zitadelOrgId;
             }
 
             return { headers };

@@ -67,6 +67,29 @@ yarn nx run backend:stop:local       # stop containers
 yarn nx run backend:destroy:local    # stop + wipe volumes (clean DB)
 ```
 
+## GraphQL Code Generation
+
+Whenever you add or modify GraphQL queries/mutations in `apps/web/src/graphql/`:
+
+1. **Write your GraphQL query/mutation** in `apps/web/src/graphql/queries/` or `apps/web/src/graphql/mutations/` (e.g., using `gql` tagged template literals).
+2. **Ensure Hasura is running** (`yarn nx run backend:start:local`).
+3. **Generate TypeScript types & Apollo hooks**:
+   ```bash
+   yarn nx run web:codegen
+   ```
+   *Or run watch mode during active development to auto-generate on save:*
+   ```bash
+   yarn nx run web:codegen-watch
+   ```
+4. **Use in components**: Import the generated hooks or types directly from `apps/web/src/graphql`:
+   ```tsx
+   import { useGetOrganizationWithUserQuery } from '../graphql';
+
+   const { data, loading, error } = useGetOrganizationWithUserQuery({
+     variables: { zitadel_org_id, zitadel_user_id },
+   });
+   ```
+
 ## Environment variables
 
 Each app manages its own `.env` from `.env.example`. Never commit `.env` files.
