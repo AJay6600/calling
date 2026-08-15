@@ -1,0 +1,2 @@
+CREATE TABLE "public"."users" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "zitadel_org_id" varchar NOT NULL, "name" bpchar NOT NULL, "created_at" timestamp NOT NULL DEFAULT now(), "updated_at" timestamp NOT NULL DEFAULT now(), "organization_id" uuid NOT NULL, PRIMARY KEY ("id") , FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON UPDATE restrict ON DELETE restrict, UNIQUE ("id"), UNIQUE ("zitadel_org_id"));
+CREATE EXTENSION IF NOT EXISTS pgcrypto;

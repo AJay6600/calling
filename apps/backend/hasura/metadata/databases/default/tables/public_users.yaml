@@ -1,0 +1,50 @@
+table:
+  name: users
+  schema: public
+object_relationships:
+  - name: organization
+    using:
+      foreign_key_constraint_on: organization_id
+insert_permissions:
+  - role: anonymous
+    permission:
+      check: {}
+      columns:
+        - created_at
+        - email
+        - id
+        - name
+        - organization_id
+        - password
+        - updated_at
+        - zitadel_user_id
+    comment: ""
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - created_at
+        - email
+        - id
+        - name
+        - organization_id
+        - password
+        - updated_at
+        - zitadel_user_id
+      filter: {}
+    comment: ""
+update_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - created_at
+        - email
+        - id
+        - name
+        - organization_id
+        - password
+        - updated_at
+        - zitadel_user_id
+      filter: {}
+      check: null
+    comment: ""

@@ -38,6 +38,30 @@
         }
       },
       "defaultConfiguration": "local"
+    },
+    "hasura-console": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "hasura console --project apps/backend/hasura"
+      }
+    },
+    "hasura-migrate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "hasura migrate apply --project apps/backend/hasura --database-name default"
+      }
+    },
+    "hasura-metadata-apply": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "hasura metadata apply --project apps/backend/hasura"
+      }
+    },
+    "hasura-status": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "hasura migrate status --project apps/backend/hasura --database-name default"
+      }
     }
   },
   "tags": []

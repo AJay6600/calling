@@ -2,7 +2,12 @@ import { useAuth, hasAuthParams } from 'react-oidc-context';
 import { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Spin, Button, Result } from 'antd';
-import { registerAuthTokenInterceptor } from '../utils';
+import { registerAuthTokenInterceptor, getZitadelOrgIdFromProfile } from '../utils';
+import {
+  registerApolloAuthToken,
+  registerApolloZitadelOrgId,
+} from '../lib/apolloClient';
+import { registerZitadelOrgIdInterceptor } from '../utils/helper/apiClient';
 import {
   AuthCallbackPage,
   DashboardPage,
@@ -15,15 +20,20 @@ import {
   AnalyticsPage,
   BillingPage,
 } from '../pages';
-import { AppLayout } from '../component/AppLayout';
+import { AppLayout, OrganizationGuard } from '../component';
 
 export const App = () => {
   const auth = useAuth();
 
   useEffect(() => {
-    registerAuthTokenInterceptor(
-      () => auth.user?.id_token ?? auth.user?.access_token,
-    );
+    const getToken = () => auth.user?.id_token ?? auth.user?.access_token;
+    const getOrgId = () => getZitadelOrgIdFromProfile(auth.user?.profile);
+
+    registerAuthTokenInterceptor(getToken);
+    registerZitadelOrgIdInterceptor(getOrgId);
+    registerApolloAuthToken(getToken);
+    registerApolloZitadelOrgId(getOrgId);
+
     if (auth.isAuthenticated && auth.user) {
       console.log('Logged in user details:', auth.user);
     }
@@ -79,7 +89,14 @@ export const App = () => {
   return (
     <Routes>
       <Route path="/callback" element={<AuthCallbackPage />} />
-      <Route path="/" element={<AppLayout />}>
+      <Route
+        path="/"
+        element={
+          <OrganizationGuard>
+            <AppLayout />
+          </OrganizationGuard>
+        }
+      >
         <Route index element={<DashboardPage />} />
         <Route path="campaigns" element={<CampaignsPage />} />
         <Route path="leads" element={<LeadsPage />} />

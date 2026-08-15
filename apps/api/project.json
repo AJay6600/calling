@@ -5,49 +5,8 @@
   "projectType": "application",
   "tags": [],
   "targets": {
-    "prisma-generate": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "prisma generate",
-        "cwd": "apps/api"
-      }
-    },
-    "prisma-migrate": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "prisma migrate dev",
-        "cwd": "apps/api"
-      }
-    },
-    "prisma-deploy": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "prisma migrate deploy",
-        "cwd": "apps/api"
-      }
-    },
-    "prisma-seed": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "prisma db seed",
-        "cwd": "apps/api"
-      }
-    },
-    "prisma-studio": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "prisma studio",
-        "cwd": "apps/api"
-      }
-    },
-    "prisma-reset": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "prisma migrate reset",
-        "cwd": "apps/api"
-      }
-    },
     "build": {
+
       "executor": "nx:run-commands",
       "options": {
         "command": "webpack-cli build",
