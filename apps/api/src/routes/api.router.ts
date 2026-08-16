@@ -9,6 +9,7 @@ import {
 } from '../middleware/ensure-organization.middleware';
 import { callsRouter } from './calls.router';
 import { authRouter } from './auth.router';
+import { actionsRouter } from './actions.router';
 
 export const apiRouter = Router();
 
@@ -33,3 +34,5 @@ apiRouter.get(
 apiRouter.use('/calls', zitadelAuthMiddleware, ensureOrganizationMiddleware, callsRouter);
 
 apiRouter.use('/auth', zitadelAuthMiddleware, ensureOrganizationMiddleware, authRouter);
+
+apiRouter.use('/actions', actionsRouter);

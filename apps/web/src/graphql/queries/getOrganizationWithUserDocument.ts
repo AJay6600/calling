@@ -1,6 +1,6 @@
-import { gql } from '@apollo/client';
+import { graphql } from '../gql/gql';
 
-export const GET_ORGANIZATION_WITH_USER = gql`
+export const getOrganizationWithUserDocument = graphql(`
   query GetOrganizationWithUser(
     $zitadel_org_id: String!
     $zitadel_user_id: String!
@@ -19,4 +19,4 @@ export const GET_ORGANIZATION_WITH_USER = gql`
       }
     }
   }
-`;
+`);

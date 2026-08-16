@@ -14,7 +14,7 @@ type InputPropsType = {
     /** To decide type of input field */
     type?: 'default' | 'password' | 'textArea';
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    rhfControllerProps: Omit<UseControllerProps<any>, 'name' | 'defaultValue'>;
+    rhfControllerProps: { control?: any; [key: string]: any };
     /** Custom styles for input box */
     customStyles?: React.CSSProperties;
     /** To decide if the field is valid or not */

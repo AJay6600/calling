@@ -1,6 +1,16 @@
-actions: []
+actions:
+  - name: placeSingleCall
+    definition:
+      kind: synchronous
+      handler: "{{ACTION_BASE_URL}}/place-single-call"
+      forward_client_headers: true
+    permissions:
+      - role: anonymous
+      - role: user
+      - role: admin
 custom_types:
   enums: []
   input_objects: []
-  objects: []
+  objects:
+    - name: PlaceSingleCallOutput
   scalars: []

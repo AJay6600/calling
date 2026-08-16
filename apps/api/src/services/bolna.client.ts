@@ -1,5 +1,7 @@
 type MakeCallParamsType = {
   recipientPhoneNumber: string;
+  bolnaAgentId?: string;
+  bolnaApiKey?: string;
 };
 
 type BolnaCallResponseType = {
@@ -37,8 +39,8 @@ export const makeCall = async (
   params: MakeCallParamsType,
 ): Promise<BolnaCallResponseType> => {
   const bolnaBaseUrl = process.env['BOLNA_BASE_URL'] ?? 'https://api.bolna.ai';
-  const bolnaApiKey = process.env['BOLNA_API_KEY'];
-  const bolnaAgentId = process.env['BOLNA_AGENT_ID'];
+  const bolnaApiKey = params.bolnaApiKey || process.env['BOLNA_API_KEY'];
+  const bolnaAgentId = params.bolnaAgentId || process.env['BOLNA_AGENT_ID'];
 
   assertBolnaConfigured(bolnaApiKey, bolnaAgentId);
 

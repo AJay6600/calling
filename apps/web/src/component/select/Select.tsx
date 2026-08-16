@@ -22,7 +22,7 @@ type SelectPropsType = {
     defaultValue?: string | undefined;
     placeholder?: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    rhfControllerProps: Omit<UseControllerProps<any>, 'name' | 'defaultValue'>;
+    rhfControllerProps: { control?: any; [key: string]: any };
     customStyles?: React.CSSProperties;
     /** Props for antd Select component */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -69,7 +69,7 @@ export const Select = ({
     hasError = false,
 }: SelectPropsType) => {
     const {
-        field: { onChange: rhfOnChange, ...rhfFields },
+        field: { onChange: rhfOnChange, value: rhfValue, ...rhfFields },
     } = useController({
         name,
         defaultValue,
@@ -92,6 +92,7 @@ export const Select = ({
             mode={mode}
             onChange={onChangeHandler}
             filterOption={customFilterOption}
+            value={rhfValue || undefined}
             {...rhfFields}
             {...antdSelectProps}
             data-testid={name}
