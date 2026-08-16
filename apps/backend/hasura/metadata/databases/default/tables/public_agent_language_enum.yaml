@@ -1,0 +1,4 @@
+table:
+  name: agent_language_enum
+  schema: public
+is_enum: true

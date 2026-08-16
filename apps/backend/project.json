@@ -62,6 +62,12 @@
       "options": {
         "command": "hasura migrate status --project apps/backend/hasura --database-name default"
       }
+    },
+    "hasura-squash": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "hasura migrate squash --project apps/backend/hasura --database-name default --delete-source"
+      }
     }
   },
   "tags": []

@@ -6,6 +6,7 @@
     "prepare": "husky",
     "web:codegen": "nx run web:codegen",
     "web:codegen-watch": "nx run web:codegen-watch",
+    "backend:hasura-squash": "nx run backend:hasura-squash",
     "codegen": "nx run web:codegen",
     "codegen-watch": "nx run web:codegen-watch"
   },
