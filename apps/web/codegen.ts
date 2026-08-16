@@ -15,22 +15,50 @@ const config: CodegenConfig = {
         },
       },
     },
+    `
+      type FileUploadS3UrlResponse {
+        url: String
+        key: String
+        policy: String
+        algorithm: String
+        credential: String
+        date: String
+        signature: String
+        contentType: String
+        contentDisposition: String
+      }
+      extend type query_root {
+        fileUploadS3Url(fileName: String!, contentType: String!): FileUploadS3UrlResponse
+      }
+      extend type Query {
+        fileUploadS3Url(fileName: String!, contentType: String!): FileUploadS3UrlResponse
+      }
+      type PlaceSingleCallOutput {
+        success: Boolean!
+        executionId: String
+        message: String
+      }
+      extend type mutation_root {
+        placeSingleCall(agentId: String!, receiverPhoneNumber: String!): PlaceSingleCallOutput
+      }
+      extend type Mutation {
+        placeSingleCall(agentId: String!, receiverPhoneNumber: String!): PlaceSingleCallOutput
+      }
+    `,
   ],
   documents: ['apps/web/src/graphql/**/*.{ts,tsx,graphql}'],
   generates: {
-    'apps/web/src/graphql/generated/graphql.ts': {
-      plugins: [
-        'typescript',
-        'typescript-operations',
-        'typescript-react-apollo',
-      ],
+    'apps/web/src/graphql/gql/': {
+      preset: 'client',
+      plugins: [],
       config: {
-        withHooks: true,
-        withHOC: false,
-        withComponent: false,
-        apolloClientVersion: 3,
-        apolloReactHooksImportFrom: '@apollo/client/react',
-        apolloReactCommonImportFrom: '@apollo/client/react',
+        allowPartialOutputs: true,
+        scalars: {
+          uuid: 'string',
+          timestamptz: 'string',
+          timestamp: 'string',
+          jsonb: 'any',
+        },
       },
     },
   },

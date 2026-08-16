@@ -1,1 +1,1 @@
-// Export mutation documents from individual files in this folder.
+export * from './placeSingleCallDocument';

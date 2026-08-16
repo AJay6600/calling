@@ -24,3 +24,10 @@ export type UserType = {
   email: string;
   organization_id: string;
 };
+
+export type OptionsDataType = {
+  /** Value which will be returned when the option is selected */
+  value: string | number;
+  /** Label for option in select dropdown */
+  label: string | number;
+};

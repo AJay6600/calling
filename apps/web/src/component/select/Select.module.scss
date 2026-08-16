@@ -1,0 +1,53 @@
+.select {
+    border-radius: 5px;
+
+    :hover {
+        border-color: var(--color-primary);
+    }
+}
+
+.selectError {
+    border: 0.5px solid var(--color-error);
+    border-radius: 5px;
+}
+
+.select {
+    :global(.ant-select-selector) {
+        border-radius: 9999px !important;
+        background-color: var(--surface-2, #141c2c) !important;
+        border: 1px solid var(--border, #242c3d) !important;
+        height: 44px !important;
+        padding: 0 18px !important;
+        display: flex !important;
+        align-items: center !important;
+        transition: all 0.2s ease !important;
+    }
+
+    &:hover :global(.ant-select-selector),
+    :global(.ant-select-focused) :global(.ant-select-selector) {
+        border-color: var(--primary, #00c391) !important;
+        box-shadow: 0 0 0 2px rgba(0, 195, 145, 0.15) !important;
+    }
+
+    :global(.ant-select-selection-item) {
+        color: var(--foreground, #f2f5f9) !important;
+        line-height: 42px !important;
+    }
+
+    :global(.ant-select-selection-placeholder) {
+        color: #606c80 !important;
+        line-height: 42px !important;
+    }
+
+    :global(.ant-select-arrow) {
+        color: #8a94a6 !important;
+    }
+}
+
+.selectError {
+    @extend .select;
+
+    :global(.ant-select-selector) {
+        border-color: var(--color-error) !important;
+    }
+}

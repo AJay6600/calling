@@ -24,18 +24,23 @@ const withAlpha = (oklchColor: string, alphaPercent: number) => {
  */
 export const getAntdThemeConfig = (styles: CSSStyleDeclaration) => {
   const primaryColor = styles.getPropertyValue('--primary');
-
-  const primaryForegroundColor = styles.getPropertyValue(
-    '--primary-foreground',
-  );
-
+  const primaryForegroundColor = styles.getPropertyValue('--primary-foreground');
   const secondaryColor = styles.getPropertyValue('--secondary');
-
-  const secondaryForegroundColor = styles.getPropertyValue(
-    '--secondary-foreground',
-  );
+  const secondaryForegroundColor = styles.getPropertyValue('--secondary-foreground');
+  const foregroundColor = styles.getPropertyValue('--foreground');
+  const surface2Color = styles.getPropertyValue('--surface-2');
+  const borderColor = styles.getPropertyValue('--border');
+  const mutedForegroundColor = styles.getPropertyValue('--muted-foreground');
+  const errorColor = styles.getPropertyValue('--color-error');
+  const popoverColor = styles.getPropertyValue('--popover');
 
   const idleItemColor = withAlpha(secondaryForegroundColor, 65);
+
+  // Shared control radius for Select and Input, so both fields stay
+  // visually consistent (pulled from --radius, e.g. "0.875rem").
+  // Converted to px since antd tokens expect a number.
+  const radiusRem = parseFloat(styles.getPropertyValue('--radius')) || 0.875;
+  const controlRadius = radiusRem * 16;
 
   return {
     token: {
@@ -76,6 +81,53 @@ export const getAntdThemeConfig = (styles: CSSStyleDeclaration) => {
         itemHoverBg: secondaryForegroundColor,
         itemSelectedBg: primaryColor,
         itemSelectedColor: primaryForegroundColor,
+      },
+      Select: {
+        borderRadius: controlRadius,
+        controlHeight: 44,
+        controlPaddingHorizontal: 18,
+        fontSize: 15,
+        colorBgContainer: surface2Color,
+        colorBgElevated: popoverColor,
+        colorBorder: borderColor,
+        colorText: foregroundColor,
+        colorTextPlaceholder: mutedForegroundColor,
+        colorTextQuaternary: mutedForegroundColor,
+        colorIcon: mutedForegroundColor,
+        colorIconHover: foregroundColor,
+        colorPrimary: primaryColor,
+        colorPrimaryHover: primaryColor,
+        colorPrimaryActive: primaryColor,
+        colorHighlight: primaryColor,
+        controlOutline: 'rgba(0, 195, 145, 0.15)',
+        controlOutlineWidth: 2,
+        optionSelectedBg: 'rgba(0, 195, 145, 0.15)',
+        optionSelectedColor: primaryColor,
+        optionSelectedFontWeight: 600,
+        optionActiveBg: 'rgba(255, 255, 255, 0.06)',
+        colorErrorBorder: errorColor,
+        colorErrorOutline: 'rgba(233, 58, 78, 0.15)',
+      },
+      Input: {
+        borderRadius: controlRadius,
+        borderRadiusLG: controlRadius,
+        controlHeight: 44,
+        paddingInline: 18,
+        paddingBlock: 8,
+        fontSize: 15,
+        lineHeight: 1.5,
+        colorBgContainer: surface2Color,
+        colorBorder: borderColor,
+        colorText: foregroundColor,
+        colorTextPlaceholder: mutedForegroundColor,
+        colorIcon: mutedForegroundColor,
+        colorIconHover: foregroundColor,
+        colorPrimary: primaryColor,
+        colorPrimaryHover: primaryColor,
+        colorPrimaryActive: primaryColor,
+        colorErrorBorder: errorColor,
+        activeShadow: '0 0 0 2px rgba(0, 195, 145, 0.15)',
+        errorActiveShadow: '0 0 0 2px rgba(233, 58, 78, 0.15)',
       },
     },
   } satisfies ThemeConfig;
