@@ -1,0 +1,14 @@
+.errorText {
+    color: var(--color-error);
+    font-size: 0.875rem; // 14px
+    padding: 0.3rem 0 0 0.2rem;
+}
+
+.inputContainer {
+    .labelName {
+        color: var(--color-label);
+        margin-bottom: 0.7rem;
+        font-size: 0.9375rem; // 15px
+        font-weight: 500;
+    }
+}

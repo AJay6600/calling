@@ -1,0 +1,12 @@
+.select {
+    border-radius: 5px;
+
+    :hover {
+        border-color: var(--color-primary);
+    }
+}
+
+.selectError {
+    border: 0.5px solid var(--color-error);
+    border-radius: 5px;
+}

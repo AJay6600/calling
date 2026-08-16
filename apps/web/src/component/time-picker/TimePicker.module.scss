@@ -1,0 +1,8 @@
+.timePicker {
+  width: 100%;
+}
+
+.timePickerError {
+  @extend .timePicker;
+  border-color: var(--color-error);
+}

@@ -156,6 +156,13 @@ export type Agent_Language_Enum_Mutation_Response = {
   returning: Array<Agent_Language_Enum>;
 };
 
+/** input type for inserting object relation for remote table "agent_language_enum" */
+export type Agent_Language_Enum_Obj_Rel_Insert_Input = {
+  data: Agent_Language_Enum_Insert_Input;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Agent_Language_Enum_On_Conflict>;
+};
+
 /** on_conflict condition type for table "agent_language_enum" */
 export type Agent_Language_Enum_On_Conflict = {
   constraint: Agent_Language_Enum_Constraint;
@@ -220,9 +227,12 @@ export type Agent_Language_Enum_Updates = {
 /** columns and relationships of "agents" */
 export type Agents = {
   __typename?: 'agents';
+  /** An object relationship */
+  agent_language_enum?: Maybe<Agent_Language_Enum>;
+  bolna_agent_id: Scalars['String']['output'];
   created_at?: Maybe<Scalars['timestamptz']['output']>;
   id: Scalars['uuid']['output'];
-  language?: Maybe<Agent_Language_Enum_Enum>;
+  language_id?: Maybe<Agent_Language_Enum_Enum>;
   name: Scalars['String']['output'];
   /** An object relationship */
   organization: Organizations;
@@ -283,9 +293,11 @@ export type Agents_Bool_Exp = {
   _and?: InputMaybe<Array<Agents_Bool_Exp>>;
   _not?: InputMaybe<Agents_Bool_Exp>;
   _or?: InputMaybe<Array<Agents_Bool_Exp>>;
+  agent_language_enum?: InputMaybe<Agent_Language_Enum_Bool_Exp>;
+  bolna_agent_id?: InputMaybe<String_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
-  language?: InputMaybe<Agent_Language_Enum_Enum_Comparison_Exp>;
+  language_id?: InputMaybe<Agent_Language_Enum_Enum_Comparison_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
   organization?: InputMaybe<Organizations_Bool_Exp>;
   organization_id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -295,15 +307,19 @@ export type Agents_Bool_Exp = {
 
 /** unique or primary key constraints on table "agents" */
 export enum Agents_Constraint {
+  /** unique or primary key constraint on columns "bolna_agent_id" */
+  AgentsBolnaAgentIdKey = 'agents_bolna_agent_id_key',
   /** unique or primary key constraint on columns "id" */
   AgentsPkey = 'agents_pkey'
 }
 
 /** input type for inserting data into table "agents" */
 export type Agents_Insert_Input = {
+  agent_language_enum?: InputMaybe<Agent_Language_Enum_Obj_Rel_Insert_Input>;
+  bolna_agent_id?: InputMaybe<Scalars['String']['input']>;
   created_at?: InputMaybe<Scalars['timestamptz']['input']>;
   id?: InputMaybe<Scalars['uuid']['input']>;
-  language?: InputMaybe<Agent_Language_Enum_Enum>;
+  language_id?: InputMaybe<Agent_Language_Enum_Enum>;
   name?: InputMaybe<Scalars['String']['input']>;
   organization?: InputMaybe<Organizations_Obj_Rel_Insert_Input>;
   organization_id?: InputMaybe<Scalars['uuid']['input']>;
@@ -314,6 +330,7 @@ export type Agents_Insert_Input = {
 /** aggregate max on columns */
 export type Agents_Max_Fields = {
   __typename?: 'agents_max_fields';
+  bolna_agent_id?: Maybe<Scalars['String']['output']>;
   created_at?: Maybe<Scalars['timestamptz']['output']>;
   id?: Maybe<Scalars['uuid']['output']>;
   name?: Maybe<Scalars['String']['output']>;
@@ -324,6 +341,7 @@ export type Agents_Max_Fields = {
 
 /** order by max() on columns of table "agents" */
 export type Agents_Max_Order_By = {
+  bolna_agent_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
@@ -335,6 +353,7 @@ export type Agents_Max_Order_By = {
 /** aggregate min on columns */
 export type Agents_Min_Fields = {
   __typename?: 'agents_min_fields';
+  bolna_agent_id?: Maybe<Scalars['String']['output']>;
   created_at?: Maybe<Scalars['timestamptz']['output']>;
   id?: Maybe<Scalars['uuid']['output']>;
   name?: Maybe<Scalars['String']['output']>;
@@ -345,6 +364,7 @@ export type Agents_Min_Fields = {
 
 /** order by min() on columns of table "agents" */
 export type Agents_Min_Order_By = {
+  bolna_agent_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
@@ -371,9 +391,11 @@ export type Agents_On_Conflict = {
 
 /** Ordering options when selecting data from "agents". */
 export type Agents_Order_By = {
+  agent_language_enum?: InputMaybe<Agent_Language_Enum_Order_By>;
+  bolna_agent_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
-  language?: InputMaybe<Order_By>;
+  language_id?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
   organization?: InputMaybe<Organizations_Order_By>;
   organization_id?: InputMaybe<Order_By>;
@@ -389,11 +411,13 @@ export type Agents_Pk_Columns_Input = {
 /** select columns of table "agents" */
 export enum Agents_Select_Column {
   /** column name */
+  BolnaAgentId = 'bolna_agent_id',
+  /** column name */
   CreatedAt = 'created_at',
   /** column name */
   Id = 'id',
   /** column name */
-  Language = 'language',
+  LanguageId = 'language_id',
   /** column name */
   Name = 'name',
   /** column name */
@@ -406,9 +430,10 @@ export enum Agents_Select_Column {
 
 /** input type for updating data in table "agents" */
 export type Agents_Set_Input = {
+  bolna_agent_id?: InputMaybe<Scalars['String']['input']>;
   created_at?: InputMaybe<Scalars['timestamptz']['input']>;
   id?: InputMaybe<Scalars['uuid']['input']>;
-  language?: InputMaybe<Agent_Language_Enum_Enum>;
+  language_id?: InputMaybe<Agent_Language_Enum_Enum>;
   name?: InputMaybe<Scalars['String']['input']>;
   organization_id?: InputMaybe<Scalars['uuid']['input']>;
   updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
@@ -425,9 +450,10 @@ export type Agents_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Agents_Stream_Cursor_Value_Input = {
+  bolna_agent_id?: InputMaybe<Scalars['String']['input']>;
   created_at?: InputMaybe<Scalars['timestamptz']['input']>;
   id?: InputMaybe<Scalars['uuid']['input']>;
-  language?: InputMaybe<Agent_Language_Enum_Enum>;
+  language_id?: InputMaybe<Agent_Language_Enum_Enum>;
   name?: InputMaybe<Scalars['String']['input']>;
   organization_id?: InputMaybe<Scalars['uuid']['input']>;
   updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
@@ -437,11 +463,13 @@ export type Agents_Stream_Cursor_Value_Input = {
 /** update columns of table "agents" */
 export enum Agents_Update_Column {
   /** column name */
+  BolnaAgentId = 'bolna_agent_id',
+  /** column name */
   CreatedAt = 'created_at',
   /** column name */
   Id = 'id',
   /** column name */
-  Language = 'language',
+  LanguageId = 'language_id',
   /** column name */
   Name = 'name',
   /** column name */

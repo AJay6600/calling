@@ -103,6 +103,10 @@
   --accent-foreground: #f6f9fc;
   --destructive: #e93a4e;
   --destructive-foreground: #f6f9fc;
+  --color-error: #ef4444;
+  --color-grey: #9099a8;
+  --color-label: #d9dfe6;
+  --color-primary: #00c391;
   --success: #24c27d;
   --success-foreground: #03130b;
   --warning: #efad32;
