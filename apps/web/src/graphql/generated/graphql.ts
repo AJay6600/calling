@@ -15,8 +15,6 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  bpchar: { input: unknown; output: unknown; }
-  timestamp: { input: unknown; output: unknown; }
   timestamptz: { input: unknown; output: unknown; }
   uuid: { input: unknown; output: unknown; }
 };
@@ -111,6 +109,24 @@ export enum Agent_Language_Enum_Constraint {
   AgentLanguageEnumPkey = 'agent_language_enum_pkey'
 }
 
+export enum Agent_Language_Enum_Enum {
+  /** English */
+  English = 'english',
+  /** Hindi */
+  Hindi = 'hindi',
+  /** Marathi */
+  Marathi = 'marathi'
+}
+
+/** Boolean expression to compare columns of type "agent_language_enum_enum". All fields are combined with logical 'AND'. */
+export type Agent_Language_Enum_Enum_Comparison_Exp = {
+  _eq?: InputMaybe<Agent_Language_Enum_Enum>;
+  _in?: InputMaybe<Array<Agent_Language_Enum_Enum>>;
+  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
+  _neq?: InputMaybe<Agent_Language_Enum_Enum>;
+  _nin?: InputMaybe<Array<Agent_Language_Enum_Enum>>;
+};
+
 /** input type for inserting data into table "agent_language_enum" */
 export type Agent_Language_Enum_Insert_Input = {
   id?: InputMaybe<Scalars['String']['input']>;
@@ -201,37 +217,246 @@ export type Agent_Language_Enum_Updates = {
   where: Agent_Language_Enum_Bool_Exp;
 };
 
-/** Boolean expression to compare columns of type "bpchar". All fields are combined with logical 'AND'. */
-export type Bpchar_Comparison_Exp = {
-  _eq?: InputMaybe<Scalars['bpchar']['input']>;
-  _gt?: InputMaybe<Scalars['bpchar']['input']>;
-  _gte?: InputMaybe<Scalars['bpchar']['input']>;
-  /** does the column match the given case-insensitive pattern */
-  _ilike?: InputMaybe<Scalars['bpchar']['input']>;
-  _in?: InputMaybe<Array<Scalars['bpchar']['input']>>;
-  /** does the column match the given POSIX regular expression, case insensitive */
-  _iregex?: InputMaybe<Scalars['bpchar']['input']>;
-  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
-  /** does the column match the given pattern */
-  _like?: InputMaybe<Scalars['bpchar']['input']>;
-  _lt?: InputMaybe<Scalars['bpchar']['input']>;
-  _lte?: InputMaybe<Scalars['bpchar']['input']>;
-  _neq?: InputMaybe<Scalars['bpchar']['input']>;
-  /** does the column NOT match the given case-insensitive pattern */
-  _nilike?: InputMaybe<Scalars['bpchar']['input']>;
-  _nin?: InputMaybe<Array<Scalars['bpchar']['input']>>;
-  /** does the column NOT match the given POSIX regular expression, case insensitive */
-  _niregex?: InputMaybe<Scalars['bpchar']['input']>;
-  /** does the column NOT match the given pattern */
-  _nlike?: InputMaybe<Scalars['bpchar']['input']>;
-  /** does the column NOT match the given POSIX regular expression, case sensitive */
-  _nregex?: InputMaybe<Scalars['bpchar']['input']>;
-  /** does the column NOT match the given SQL regular expression */
-  _nsimilar?: InputMaybe<Scalars['bpchar']['input']>;
-  /** does the column match the given POSIX regular expression, case sensitive */
-  _regex?: InputMaybe<Scalars['bpchar']['input']>;
-  /** does the column match the given SQL regular expression */
-  _similar?: InputMaybe<Scalars['bpchar']['input']>;
+/** columns and relationships of "agents" */
+export type Agents = {
+  __typename?: 'agents';
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  id: Scalars['uuid']['output'];
+  language?: Maybe<Agent_Language_Enum_Enum>;
+  name: Scalars['String']['output'];
+  /** An object relationship */
+  organization: Organizations;
+  organization_id: Scalars['uuid']['output'];
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+  zitadel_org_id: Scalars['String']['output'];
+};
+
+/** aggregated selection of "agents" */
+export type Agents_Aggregate = {
+  __typename?: 'agents_aggregate';
+  aggregate?: Maybe<Agents_Aggregate_Fields>;
+  nodes: Array<Agents>;
+};
+
+export type Agents_Aggregate_Bool_Exp = {
+  count?: InputMaybe<Agents_Aggregate_Bool_Exp_Count>;
+};
+
+export type Agents_Aggregate_Bool_Exp_Count = {
+  arguments?: InputMaybe<Array<Agents_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<Agents_Bool_Exp>;
+  predicate: Int_Comparison_Exp;
+};
+
+/** aggregate fields of "agents" */
+export type Agents_Aggregate_Fields = {
+  __typename?: 'agents_aggregate_fields';
+  count: Scalars['Int']['output'];
+  max?: Maybe<Agents_Max_Fields>;
+  min?: Maybe<Agents_Min_Fields>;
+};
+
+
+/** aggregate fields of "agents" */
+export type Agents_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Agents_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** order by aggregate values of table "agents" */
+export type Agents_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Agents_Max_Order_By>;
+  min?: InputMaybe<Agents_Min_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "agents" */
+export type Agents_Arr_Rel_Insert_Input = {
+  data: Array<Agents_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Agents_On_Conflict>;
+};
+
+/** Boolean expression to filter rows from the table "agents". All fields are combined with a logical 'AND'. */
+export type Agents_Bool_Exp = {
+  _and?: InputMaybe<Array<Agents_Bool_Exp>>;
+  _not?: InputMaybe<Agents_Bool_Exp>;
+  _or?: InputMaybe<Array<Agents_Bool_Exp>>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  language?: InputMaybe<Agent_Language_Enum_Enum_Comparison_Exp>;
+  name?: InputMaybe<String_Comparison_Exp>;
+  organization?: InputMaybe<Organizations_Bool_Exp>;
+  organization_id?: InputMaybe<Uuid_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  zitadel_org_id?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "agents" */
+export enum Agents_Constraint {
+  /** unique or primary key constraint on columns "id" */
+  AgentsPkey = 'agents_pkey'
+}
+
+/** input type for inserting data into table "agents" */
+export type Agents_Insert_Input = {
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  id?: InputMaybe<Scalars['uuid']['input']>;
+  language?: InputMaybe<Agent_Language_Enum_Enum>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  organization?: InputMaybe<Organizations_Obj_Rel_Insert_Input>;
+  organization_id?: InputMaybe<Scalars['uuid']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  zitadel_org_id?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** aggregate max on columns */
+export type Agents_Max_Fields = {
+  __typename?: 'agents_max_fields';
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  id?: Maybe<Scalars['uuid']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  organization_id?: Maybe<Scalars['uuid']['output']>;
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+  zitadel_org_id?: Maybe<Scalars['String']['output']>;
+};
+
+/** order by max() on columns of table "agents" */
+export type Agents_Max_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
+  organization_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  zitadel_org_id?: InputMaybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Agents_Min_Fields = {
+  __typename?: 'agents_min_fields';
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  id?: Maybe<Scalars['uuid']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  organization_id?: Maybe<Scalars['uuid']['output']>;
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+  zitadel_org_id?: Maybe<Scalars['String']['output']>;
+};
+
+/** order by min() on columns of table "agents" */
+export type Agents_Min_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
+  organization_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  zitadel_org_id?: InputMaybe<Order_By>;
+};
+
+/** response of any mutation on the table "agents" */
+export type Agents_Mutation_Response = {
+  __typename?: 'agents_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int']['output'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Agents>;
+};
+
+/** on_conflict condition type for table "agents" */
+export type Agents_On_Conflict = {
+  constraint: Agents_Constraint;
+  update_columns?: Array<Agents_Update_Column>;
+  where?: InputMaybe<Agents_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "agents". */
+export type Agents_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  language?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
+  organization?: InputMaybe<Organizations_Order_By>;
+  organization_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  zitadel_org_id?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: agents */
+export type Agents_Pk_Columns_Input = {
+  id: Scalars['uuid']['input'];
+};
+
+/** select columns of table "agents" */
+export enum Agents_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Language = 'language',
+  /** column name */
+  Name = 'name',
+  /** column name */
+  OrganizationId = 'organization_id',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  ZitadelOrgId = 'zitadel_org_id'
+}
+
+/** input type for updating data in table "agents" */
+export type Agents_Set_Input = {
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  id?: InputMaybe<Scalars['uuid']['input']>;
+  language?: InputMaybe<Agent_Language_Enum_Enum>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  organization_id?: InputMaybe<Scalars['uuid']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  zitadel_org_id?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Streaming cursor of the table "agents" */
+export type Agents_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Agents_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Agents_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  id?: InputMaybe<Scalars['uuid']['input']>;
+  language?: InputMaybe<Agent_Language_Enum_Enum>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  organization_id?: InputMaybe<Scalars['uuid']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  zitadel_org_id?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** update columns of table "agents" */
+export enum Agents_Update_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Language = 'language',
+  /** column name */
+  Name = 'name',
+  /** column name */
+  OrganizationId = 'organization_id',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  ZitadelOrgId = 'zitadel_org_id'
+}
+
+export type Agents_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Agents_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: Agents_Bool_Exp;
 };
 
 /** ordering argument of a cursor */
@@ -249,6 +474,10 @@ export type Mutation_Root = {
   delete_agent_language_enum?: Maybe<Agent_Language_Enum_Mutation_Response>;
   /** delete single row from the table: "agent_language_enum" */
   delete_agent_language_enum_by_pk?: Maybe<Agent_Language_Enum>;
+  /** delete data from the table: "agents" */
+  delete_agents?: Maybe<Agents_Mutation_Response>;
+  /** delete single row from the table: "agents" */
+  delete_agents_by_pk?: Maybe<Agents>;
   /** delete data from the table: "organizations" */
   delete_organizations?: Maybe<Organizations_Mutation_Response>;
   /** delete single row from the table: "organizations" */
@@ -261,6 +490,10 @@ export type Mutation_Root = {
   insert_agent_language_enum?: Maybe<Agent_Language_Enum_Mutation_Response>;
   /** insert a single row into the table: "agent_language_enum" */
   insert_agent_language_enum_one?: Maybe<Agent_Language_Enum>;
+  /** insert data into the table: "agents" */
+  insert_agents?: Maybe<Agents_Mutation_Response>;
+  /** insert a single row into the table: "agents" */
+  insert_agents_one?: Maybe<Agents>;
   /** insert data into the table: "organizations" */
   insert_organizations?: Maybe<Organizations_Mutation_Response>;
   /** insert a single row into the table: "organizations" */
@@ -275,6 +508,12 @@ export type Mutation_Root = {
   update_agent_language_enum_by_pk?: Maybe<Agent_Language_Enum>;
   /** update multiples rows of table: "agent_language_enum" */
   update_agent_language_enum_many?: Maybe<Array<Maybe<Agent_Language_Enum_Mutation_Response>>>;
+  /** update data of the table: "agents" */
+  update_agents?: Maybe<Agents_Mutation_Response>;
+  /** update single row of the table: "agents" */
+  update_agents_by_pk?: Maybe<Agents>;
+  /** update multiples rows of table: "agents" */
+  update_agents_many?: Maybe<Array<Maybe<Agents_Mutation_Response>>>;
   /** update data of the table: "organizations" */
   update_organizations?: Maybe<Organizations_Mutation_Response>;
   /** update single row of the table: "organizations" */
@@ -299,6 +538,18 @@ export type Mutation_RootDelete_Agent_Language_EnumArgs = {
 /** mutation root */
 export type Mutation_RootDelete_Agent_Language_Enum_By_PkArgs = {
   id: Scalars['String']['input'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_AgentsArgs = {
+  where: Agents_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Agents_By_PkArgs = {
+  id: Scalars['uuid']['input'];
 };
 
 
@@ -337,6 +588,20 @@ export type Mutation_RootInsert_Agent_Language_EnumArgs = {
 export type Mutation_RootInsert_Agent_Language_Enum_OneArgs = {
   object: Agent_Language_Enum_Insert_Input;
   on_conflict?: InputMaybe<Agent_Language_Enum_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_AgentsArgs = {
+  objects: Array<Agents_Insert_Input>;
+  on_conflict?: InputMaybe<Agents_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Agents_OneArgs = {
+  object: Agents_Insert_Input;
+  on_conflict?: InputMaybe<Agents_On_Conflict>;
 };
 
 
@@ -385,6 +650,26 @@ export type Mutation_RootUpdate_Agent_Language_Enum_By_PkArgs = {
 /** mutation root */
 export type Mutation_RootUpdate_Agent_Language_Enum_ManyArgs = {
   updates: Array<Agent_Language_Enum_Updates>;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_AgentsArgs = {
+  _set?: InputMaybe<Agents_Set_Input>;
+  where: Agents_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Agents_By_PkArgs = {
+  _set?: InputMaybe<Agents_Set_Input>;
+  pk_columns: Agents_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Agents_ManyArgs = {
+  updates: Array<Agents_Updates>;
 };
 
 
@@ -446,6 +731,10 @@ export enum Order_By {
 /** columns and relationships of "organizations" */
 export type Organizations = {
   __typename?: 'organizations';
+  /** An array relationship */
+  agents: Array<Agents>;
+  /** An aggregate relationship */
+  agents_aggregate: Agents_Aggregate;
   bolna_api_key?: Maybe<Scalars['String']['output']>;
   created_at?: Maybe<Scalars['timestamptz']['output']>;
   id: Scalars['uuid']['output'];
@@ -456,6 +745,26 @@ export type Organizations = {
   /** An aggregate relationship */
   users_aggregate: Users_Aggregate;
   zitadel_org_id: Scalars['String']['output'];
+};
+
+
+/** columns and relationships of "organizations" */
+export type OrganizationsAgentsArgs = {
+  distinct_on?: InputMaybe<Array<Agents_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Agents_Order_By>>;
+  where?: InputMaybe<Agents_Bool_Exp>;
+};
+
+
+/** columns and relationships of "organizations" */
+export type OrganizationsAgents_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Agents_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Agents_Order_By>>;
+  where?: InputMaybe<Agents_Bool_Exp>;
 };
 
 
@@ -505,6 +814,8 @@ export type Organizations_Bool_Exp = {
   _and?: InputMaybe<Array<Organizations_Bool_Exp>>;
   _not?: InputMaybe<Organizations_Bool_Exp>;
   _or?: InputMaybe<Array<Organizations_Bool_Exp>>;
+  agents?: InputMaybe<Agents_Bool_Exp>;
+  agents_aggregate?: InputMaybe<Agents_Aggregate_Bool_Exp>;
   bolna_api_key?: InputMaybe<String_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -525,6 +836,7 @@ export enum Organizations_Constraint {
 
 /** input type for inserting data into table "organizations" */
 export type Organizations_Insert_Input = {
+  agents?: InputMaybe<Agents_Arr_Rel_Insert_Input>;
   bolna_api_key?: InputMaybe<Scalars['String']['input']>;
   created_at?: InputMaybe<Scalars['timestamptz']['input']>;
   id?: InputMaybe<Scalars['uuid']['input']>;
@@ -581,6 +893,7 @@ export type Organizations_On_Conflict = {
 
 /** Ordering options when selecting data from "organizations". */
 export type Organizations_Order_By = {
+  agents_aggregate?: InputMaybe<Agents_Aggregate_Order_By>;
   bolna_api_key?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
@@ -670,6 +983,12 @@ export type Query_Root = {
   agent_language_enum_aggregate: Agent_Language_Enum_Aggregate;
   /** fetch data from the table: "agent_language_enum" using primary key columns */
   agent_language_enum_by_pk?: Maybe<Agent_Language_Enum>;
+  /** An array relationship */
+  agents: Array<Agents>;
+  /** An aggregate relationship */
+  agents_aggregate: Agents_Aggregate;
+  /** fetch data from the table: "agents" using primary key columns */
+  agents_by_pk?: Maybe<Agents>;
   /** fetch data from the table: "organizations" */
   organizations: Array<Organizations>;
   /** fetch aggregated fields from the table: "organizations" */
@@ -705,6 +1024,29 @@ export type Query_RootAgent_Language_Enum_AggregateArgs = {
 
 export type Query_RootAgent_Language_Enum_By_PkArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type Query_RootAgentsArgs = {
+  distinct_on?: InputMaybe<Array<Agents_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Agents_Order_By>>;
+  where?: InputMaybe<Agents_Bool_Exp>;
+};
+
+
+export type Query_RootAgents_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Agents_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Agents_Order_By>>;
+  where?: InputMaybe<Agents_Bool_Exp>;
+};
+
+
+export type Query_RootAgents_By_PkArgs = {
+  id: Scalars['uuid']['input'];
 };
 
 
@@ -763,6 +1105,14 @@ export type Subscription_Root = {
   agent_language_enum_by_pk?: Maybe<Agent_Language_Enum>;
   /** fetch data from the table in a streaming manner: "agent_language_enum" */
   agent_language_enum_stream: Array<Agent_Language_Enum>;
+  /** An array relationship */
+  agents: Array<Agents>;
+  /** An aggregate relationship */
+  agents_aggregate: Agents_Aggregate;
+  /** fetch data from the table: "agents" using primary key columns */
+  agents_by_pk?: Maybe<Agents>;
+  /** fetch data from the table in a streaming manner: "agents" */
+  agents_stream: Array<Agents>;
   /** fetch data from the table: "organizations" */
   organizations: Array<Organizations>;
   /** fetch aggregated fields from the table: "organizations" */
@@ -809,6 +1159,36 @@ export type Subscription_RootAgent_Language_Enum_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Agent_Language_Enum_Stream_Cursor_Input>>;
   where?: InputMaybe<Agent_Language_Enum_Bool_Exp>;
+};
+
+
+export type Subscription_RootAgentsArgs = {
+  distinct_on?: InputMaybe<Array<Agents_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Agents_Order_By>>;
+  where?: InputMaybe<Agents_Bool_Exp>;
+};
+
+
+export type Subscription_RootAgents_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Agents_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Agents_Order_By>>;
+  where?: InputMaybe<Agents_Bool_Exp>;
+};
+
+
+export type Subscription_RootAgents_By_PkArgs = {
+  id: Scalars['uuid']['input'];
+};
+
+
+export type Subscription_RootAgents_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Agents_Stream_Cursor_Input>>;
+  where?: InputMaybe<Agents_Bool_Exp>;
 };
 
 
@@ -871,19 +1251,6 @@ export type Subscription_RootUsers_StreamArgs = {
   where?: InputMaybe<Users_Bool_Exp>;
 };
 
-/** Boolean expression to compare columns of type "timestamp". All fields are combined with logical 'AND'. */
-export type Timestamp_Comparison_Exp = {
-  _eq?: InputMaybe<Scalars['timestamp']['input']>;
-  _gt?: InputMaybe<Scalars['timestamp']['input']>;
-  _gte?: InputMaybe<Scalars['timestamp']['input']>;
-  _in?: InputMaybe<Array<Scalars['timestamp']['input']>>;
-  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
-  _lt?: InputMaybe<Scalars['timestamp']['input']>;
-  _lte?: InputMaybe<Scalars['timestamp']['input']>;
-  _neq?: InputMaybe<Scalars['timestamp']['input']>;
-  _nin?: InputMaybe<Array<Scalars['timestamp']['input']>>;
-};
-
 /** Boolean expression to compare columns of type "timestamptz". All fields are combined with logical 'AND'. */
 export type Timestamptz_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['timestamptz']['input']>;
@@ -900,15 +1267,15 @@ export type Timestamptz_Comparison_Exp = {
 /** columns and relationships of "users" */
 export type Users = {
   __typename?: 'users';
-  created_at: Scalars['timestamp']['output'];
-  email: Scalars['bpchar']['output'];
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  email: Scalars['String']['output'];
   id: Scalars['uuid']['output'];
-  name: Scalars['bpchar']['output'];
+  name: Scalars['String']['output'];
   /** An object relationship */
   organization: Organizations;
   organization_id: Scalars['uuid']['output'];
-  password: Scalars['bpchar']['output'];
-  updated_at: Scalars['timestamp']['output'];
+  password: Scalars['String']['output'];
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
   zitadel_user_id: Scalars['String']['output'];
 };
 
@@ -964,14 +1331,14 @@ export type Users_Bool_Exp = {
   _and?: InputMaybe<Array<Users_Bool_Exp>>;
   _not?: InputMaybe<Users_Bool_Exp>;
   _or?: InputMaybe<Array<Users_Bool_Exp>>;
-  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
-  email?: InputMaybe<Bpchar_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  email?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
-  name?: InputMaybe<Bpchar_Comparison_Exp>;
+  name?: InputMaybe<String_Comparison_Exp>;
   organization?: InputMaybe<Organizations_Bool_Exp>;
   organization_id?: InputMaybe<Uuid_Comparison_Exp>;
-  password?: InputMaybe<Bpchar_Comparison_Exp>;
-  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  password?: InputMaybe<String_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   zitadel_user_id?: InputMaybe<String_Comparison_Exp>;
 };
 
@@ -982,32 +1349,32 @@ export enum Users_Constraint {
   /** unique or primary key constraint on columns "id" */
   UsersPkey = 'users_pkey',
   /** unique or primary key constraint on columns "zitadel_user_id" */
-  UsersZitadelOrgIdKey = 'users_zitadel_org_id_key'
+  UsersZitadelUserIdKey = 'users_zitadel_user_id_key'
 }
 
 /** input type for inserting data into table "users" */
 export type Users_Insert_Input = {
-  created_at?: InputMaybe<Scalars['timestamp']['input']>;
-  email?: InputMaybe<Scalars['bpchar']['input']>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['uuid']['input']>;
-  name?: InputMaybe<Scalars['bpchar']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
   organization?: InputMaybe<Organizations_Obj_Rel_Insert_Input>;
   organization_id?: InputMaybe<Scalars['uuid']['input']>;
-  password?: InputMaybe<Scalars['bpchar']['input']>;
-  updated_at?: InputMaybe<Scalars['timestamp']['input']>;
+  password?: InputMaybe<Scalars['String']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
   zitadel_user_id?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** aggregate max on columns */
 export type Users_Max_Fields = {
   __typename?: 'users_max_fields';
-  created_at?: Maybe<Scalars['timestamp']['output']>;
-  email?: Maybe<Scalars['bpchar']['output']>;
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  email?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['uuid']['output']>;
-  name?: Maybe<Scalars['bpchar']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
   organization_id?: Maybe<Scalars['uuid']['output']>;
-  password?: Maybe<Scalars['bpchar']['output']>;
-  updated_at?: Maybe<Scalars['timestamp']['output']>;
+  password?: Maybe<Scalars['String']['output']>;
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
   zitadel_user_id?: Maybe<Scalars['String']['output']>;
 };
 
@@ -1026,13 +1393,13 @@ export type Users_Max_Order_By = {
 /** aggregate min on columns */
 export type Users_Min_Fields = {
   __typename?: 'users_min_fields';
-  created_at?: Maybe<Scalars['timestamp']['output']>;
-  email?: Maybe<Scalars['bpchar']['output']>;
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  email?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['uuid']['output']>;
-  name?: Maybe<Scalars['bpchar']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
   organization_id?: Maybe<Scalars['uuid']['output']>;
-  password?: Maybe<Scalars['bpchar']['output']>;
-  updated_at?: Maybe<Scalars['timestamp']['output']>;
+  password?: Maybe<Scalars['String']['output']>;
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
   zitadel_user_id?: Maybe<Scalars['String']['output']>;
 };
 
@@ -1104,13 +1471,13 @@ export enum Users_Select_Column {
 
 /** input type for updating data in table "users" */
 export type Users_Set_Input = {
-  created_at?: InputMaybe<Scalars['timestamp']['input']>;
-  email?: InputMaybe<Scalars['bpchar']['input']>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['uuid']['input']>;
-  name?: InputMaybe<Scalars['bpchar']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
   organization_id?: InputMaybe<Scalars['uuid']['input']>;
-  password?: InputMaybe<Scalars['bpchar']['input']>;
-  updated_at?: InputMaybe<Scalars['timestamp']['input']>;
+  password?: InputMaybe<Scalars['String']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
   zitadel_user_id?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -1124,13 +1491,13 @@ export type Users_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Users_Stream_Cursor_Value_Input = {
-  created_at?: InputMaybe<Scalars['timestamp']['input']>;
-  email?: InputMaybe<Scalars['bpchar']['input']>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['uuid']['input']>;
-  name?: InputMaybe<Scalars['bpchar']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
   organization_id?: InputMaybe<Scalars['uuid']['input']>;
-  password?: InputMaybe<Scalars['bpchar']['input']>;
-  updated_at?: InputMaybe<Scalars['timestamp']['input']>;
+  password?: InputMaybe<Scalars['String']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
   zitadel_user_id?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -1180,7 +1547,7 @@ export type GetOrganizationWithUserQueryVariables = Exact<{
 }>;
 
 
-export type GetOrganizationWithUserQuery = { organizations: Array<{ id: unknown, zitadel_org_id: string, name: string, created_at: unknown, updated_at: unknown, users: Array<{ id: unknown, zitadel_user_id: string, email: unknown, organization_id: unknown }> }> };
+export type GetOrganizationWithUserQuery = { organizations: Array<{ id: unknown, zitadel_org_id: string, name: string, created_at: unknown, updated_at: unknown, users: Array<{ id: unknown, zitadel_user_id: string, email: string, organization_id: unknown }> }> };
 
 
 export const GetOrganizationWithUserDocument = gql`
