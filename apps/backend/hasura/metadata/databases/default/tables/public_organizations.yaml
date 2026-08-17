@@ -16,6 +16,13 @@ array_relationships:
         table:
           name: users
           schema: public
+  - name: call_logs
+    using:
+      foreign_key_constraint_on:
+        column: organization_id
+        table:
+          name: call_logs
+          schema: public
 insert_permissions:
   - role: anonymous
     permission:

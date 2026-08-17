@@ -2,7 +2,10 @@ import { useAuth, hasAuthParams } from 'react-oidc-context';
 import { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Spin, Button, Result } from 'antd';
-import { registerAuthTokenInterceptor, getZitadelOrgIdFromProfile } from '../utils';
+import {
+  registerAuthTokenInterceptor,
+  getZitadelOrgIdFromProfile,
+} from '../utils';
 import {
   registerApolloAuthToken,
   registerApolloZitadelOrgId,
@@ -19,6 +22,7 @@ import {
   CallLogsPage,
   AnalyticsPage,
   BillingPage,
+  CallLogDetailPage,
 } from '../pages';
 import { AppLayout, OrganizationGuard } from '../component';
 
@@ -105,6 +109,7 @@ export const App = () => {
         <Route path="calls/single" element={<SingleCallPage />} />
         <Route path="calls/bulk" element={<BulkCallPage />} />
         <Route path="calls/logs" element={<CallLogsPage />} />
+        <Route path="calls/logs/:id" element={<CallLogDetailPage />} />
         <Route path="analytics" element={<AnalyticsPage />} />
         <Route path="billing" element={<BillingPage />} />
       </Route>

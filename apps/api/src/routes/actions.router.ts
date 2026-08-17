@@ -21,8 +21,10 @@ type AgentAndOrgQueryResult = {
   agents_by_pk: {
     id: string;
     bolna_agent_id: string;
+    zitadel_org_id: string;
     organization: {
       id: string;
+      zitadel_org_id: string;
       bolna_api_key: string | null;
     } | null;
   } | null;
@@ -33,10 +35,20 @@ const GET_AGENT_AND_ORG_QUERY = `
     agents_by_pk(id: $agentId) {
       id
       bolna_agent_id
+      zitadel_org_id
       organization {
         id
+        zitadel_org_id
         bolna_api_key
       }
+    }
+  }
+`;
+
+const INSERT_CALL_LOG_MUTATION = `
+  mutation InsertCallLog($object: call_logs_insert_input!) {
+    insert_call_logs_one(object: $object) {
+      id
     }
   }
 `;
@@ -91,6 +103,28 @@ actionsRouter.post('/place-single-call', async (req: Request, res: Response) => 
       bolnaAgentId,
       bolnaApiKey,
     });
+
+    // 3. Immediately insert initial call log entry into database
+    const organizationId = agent.organization?.id;
+    const zitadelOrgId = agent.zitadel_org_id || agent.organization?.zitadel_org_id;
+
+    if (organizationId && zitadelOrgId) {
+      try {
+        await queryHasuraAdmin(INSERT_CALL_LOG_MUTATION, {
+          object: {
+            organization_id: organizationId,
+            zitadel_org_id: zitadelOrgId,
+            agent_id: agent.id,
+            bolna_agent_id: bolnaAgentId,
+            bolna_execution_id: result.executionId,
+            recipient_phone_number: receiverPhoneNumber,
+            status: 'queued',
+          },
+        });
+      } catch (insertErr) {
+        console.error('Error inserting initial call_log entry:', insertErr);
+      }
+    }
 
     res.json({
       success: true,

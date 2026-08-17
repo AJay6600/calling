@@ -8,3 +8,4 @@ export * from './BulkCallPage';
 export * from './CallLogsPage';
 export * from './AnalyticsPage';
 export * from './BillingPage';
+export * from './CallLogDetailPage';
