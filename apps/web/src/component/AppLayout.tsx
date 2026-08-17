@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Layout, Menu, Typography, Button, Avatar, Tooltip, type MenuProps } from 'antd';
+import { Layout, Menu, Typography, Button, type MenuProps } from 'antd';
 import {
   FiGrid,
   FiRadio,
@@ -10,9 +10,14 @@ import {
   FiCreditCard,
   FiPhoneOutgoing,
   FiLogOut,
+  FiArrowLeft,
 } from 'react-icons/fi';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
+import {
+  PageHeaderProvider,
+  usePageHeader,
+} from '../contexts/PageHeaderContext';
 
 const { Sider, Header, Content } = Layout;
 const { Text, Title } = Typography;
@@ -170,7 +175,56 @@ const buildMenuItems = (currentPath: string): Required<MenuProps>['items'] => {
   });
 };
 
-export const AppLayout = () => {
+/**
+ * Renders the left-hand side of the top Header. Uses `usePageHeader()` so
+ * any nested route (e.g. CallLogDetailPage) can override the title/subtext
+ * and inject a back button by calling `useSetPageHeader(...)`. Falls back
+ * to the static `pageMetaMap` lookup when no page has set an override.
+ *
+ * Must be rendered inside <PageHeaderProvider>.
+ */
+const AppHeaderTitle: React.FC<{ pathname: string }> = ({ pathname }) => {
+  const { headerOverride } = usePageHeader();
+
+  const headerMeta = pageMetaMap[pathname] ??
+    pageMetaMap['/'] ?? {
+      title: 'Command center',
+      subtext: 'Live view of your AI calling operation',
+    };
+
+  const title = headerOverride?.title ?? headerMeta.title;
+  const subtext = headerOverride?.subtext ?? headerMeta.subtext;
+  const onBack = headerOverride?.onBack;
+
+  return (
+    <div className="flex items-center gap-3">
+      {onBack && (
+        <Button
+          shape="circle"
+          icon={<FiArrowLeft />}
+          onClick={onBack}
+          className="bg-transparent! text-foreground! border-border! hover:text-primary! hover:border-primary!"
+        />
+      )}
+      <div className="flex flex-col">
+        <Title
+          level={3}
+          className="m-0! text-foreground!"
+          style={{ fontFamily: 'var(--font-display)', fontWeight: 600 }}
+        >
+          {title}
+        </Title>
+        {subtext && (
+          <Text className="text-sm text-muted-foreground opacity-70">
+            {subtext}
+          </Text>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const AppLayoutInner = () => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -201,12 +255,6 @@ export const AppLayout = () => {
   const email = userProfile?.email || '';
 
   const menuItems = buildMenuItems(location.pathname);
-  const headerMeta =
-    pageMetaMap[location.pathname] ??
-    pageMetaMap['/'] ?? {
-      title: 'Command center',
-      subtext: 'Live view of your AI calling operation',
-    };
 
   return (
     <Layout className="h-screen bg-background">
@@ -283,18 +331,7 @@ export const AppLayout = () => {
 
       <Layout className="h-full min-w-0 bg-background">
         <Header className="flex h-auto shrink-0 items-center justify-between border-b border-border bg-background! px-8 py-4">
-          <div className="flex flex-col">
-            <Title
-              level={3}
-              className="m-0! text-foreground!"
-              style={{ fontFamily: 'var(--font-display)', fontWeight: 600 }}
-            >
-              {headerMeta.title}
-            </Title>
-            <Text className="text-sm text-muted-foreground opacity-70">
-              {headerMeta.subtext}
-            </Text>
-          </div>
+          <AppHeaderTitle pathname={location.pathname} />
 
           <div className="flex items-center gap-3 rounded-xl border border-border/80 bg-secondary/50 px-3.5 py-1.5 backdrop-blur-md shadow-sm transition-all hover:border-primary/40 hover:bg-secondary/80">
             <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-sm shadow-sm shadow-primary/20">
@@ -324,16 +361,21 @@ export const AppLayout = () => {
               aria-label="Sign out"
               className="group flex size-8 shrink-0 items-center justify-center rounded-lg p-0 transition-all duration-200 hover:bg-destructive/20"
             />
-
           </div>
         </Header>
 
-        <Content className="relative flex flex-1 flex-col items-center justify-center overflow-y-auto bg-background bg-[radial-gradient(120%_90%_at_15%_0%,#00C39124,transparent_60%)] p-6">
+        <Content className="relative flex flex-1 flex-col overflow-y-auto bg-background bg-[radial-gradient(120%_90%_at_15%_0%,#00C39124,transparent_60%)] p-6">
           <Outlet />
         </Content>
       </Layout>
     </Layout>
   );
 };
+
+export const AppLayout = () => (
+  <PageHeaderProvider>
+    <AppLayoutInner />
+  </PageHeaderProvider>
+);
 
 export default AppLayout;

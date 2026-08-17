@@ -24,9 +24,13 @@ const withAlpha = (oklchColor: string, alphaPercent: number) => {
  */
 export const getAntdThemeConfig = (styles: CSSStyleDeclaration) => {
   const primaryColor = styles.getPropertyValue('--primary');
-  const primaryForegroundColor = styles.getPropertyValue('--primary-foreground');
+  const primaryForegroundColor = styles.getPropertyValue(
+    '--primary-foreground',
+  );
   const secondaryColor = styles.getPropertyValue('--secondary');
-  const secondaryForegroundColor = styles.getPropertyValue('--secondary-foreground');
+  const secondaryForegroundColor = styles.getPropertyValue(
+    '--secondary-foreground',
+  );
   const foregroundColor = styles.getPropertyValue('--foreground');
   const surface2Color = styles.getPropertyValue('--surface-2');
   const borderColor = styles.getPropertyValue('--border');
@@ -65,16 +69,41 @@ export const getAntdThemeConfig = (styles: CSSStyleDeclaration) => {
       },
       Tabs: {
         itemSelectedColor: primaryColor,
-        itemColor: secondaryColor,
-        itemHoverColor: primaryColor,
+        itemColor: mutedForegroundColor,
+        itemHoverColor: foregroundColor,
         itemActiveColor: primaryColor,
         inkBarColor: primaryColor,
+        fontSize: 15,
+        titleFontSizeLG: 16,
+        horizontalItemGutter: 32,
+        horizontalItemPadding: '12px 0',
+        cardBg: 'transparent',
+        colorBorderSecondary: borderColor,
       },
       Table: {
         headerBg: 'transparent',
         headerSplitColor: 'transparent',
-        cellPaddingBlock: 12,
-        cellPaddingInline: 12,
+        headerColor: mutedForegroundColor,
+        cellPaddingBlock: 16,
+        cellPaddingInline: 16,
+        colorBgContainer: 'transparent',
+        rowHoverBg: 'rgba(255, 255, 255, 0.03)',
+        borderColor: borderColor,
+        colorBgElevated: popoverColor,
+        filterDropdownBg: popoverColor,
+        filterDropdownMenuBg: popoverColor,
+      },
+      Pagination: {
+        itemActiveBg: 'transparent',
+        itemBg: 'transparent',
+        colorPrimary: primaryColor,
+        colorPrimaryHover: primaryColor,
+        itemSize: 32,
+        borderRadius: 999,
+      },
+      Tag: {
+        defaultBg: 'transparent',
+        defaultColor: foregroundColor,
       },
       Segmented: {
         itemActiveBg: secondaryForegroundColor,

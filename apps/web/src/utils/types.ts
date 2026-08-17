@@ -55,14 +55,18 @@ export type CallLogRecordType = {
   call_type?: string | null;
   telephony_provider?: string | null;
   status: string;
-  call_status_enum?: CallStatusEnumType | null;
+  call_status_enum?: { id: string; label: string } | null;
   hangup_by?: string | null;
   hangup_reason?: string | null;
   duration_seconds?: number | null;
   recording_url?: string | null;
   total_cost?: number | null;
   disposition?: string | null;
-  disposition_enum?: DispositionEnumType | null;
+  disposition_enum?: {
+    id: string;
+    label: string;
+    description?: string | null;
+  } | null;
   summary?: string | null;
   transcript?: string | null;
   extracted_data?: any;
@@ -71,9 +75,5 @@ export type CallLogRecordType = {
   initiated_at?: string | null;
   created_at: string;
   updated_at: string;
-  agent?: {
-    id: string;
-    name: string;
-    language_id?: string | null;
-  } | null;
+  agent?: { id: string; name: string; language_id?: string | null } | null;
 };
