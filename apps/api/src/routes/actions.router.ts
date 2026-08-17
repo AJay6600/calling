@@ -1,12 +1,13 @@
 import { Router, Request, Response } from 'express';
 import { queryHasuraAdmin } from '../lib/hasuraClient';
 import { makeCall } from '../services/bolna.client';
+import { updateLeadOnCallPlaced } from '../services/lead.service';
 
 export const actionsRouter = Router();
 
 type PlaceSingleCallInput = {
   agentId: string;
-  receiverPhoneNumber: string;
+  leadId: string;
 };
 
 type HasuraActionPayload<T> = {
@@ -17,30 +18,44 @@ type HasuraActionPayload<T> = {
   session_variables?: Record<string, string>;
 };
 
-type AgentAndOrgQueryResult = {
+type AgentAndLeadQueryResult = {
   agents_by_pk: {
     id: string;
     bolna_agent_id: string;
     zitadel_org_id: string;
+    organization_id: string;
     organization: {
       id: string;
       zitadel_org_id: string;
       bolna_api_key: string | null;
     } | null;
   } | null;
+  leads_by_pk: {
+    id: string;
+    phone_number: string;
+    organization_id: string;
+    zitadel_org_id: string;
+  } | null;
 };
 
-const GET_AGENT_AND_ORG_QUERY = `
-  query GetAgentAndOrgDetails($agentId: uuid!) {
+const GET_AGENT_AND_LEAD_QUERY = `
+  query GetAgentAndLeadDetails($agentId: uuid!, $leadId: uuid!) {
     agents_by_pk(id: $agentId) {
       id
       bolna_agent_id
       zitadel_org_id
+      organization_id
       organization {
         id
         zitadel_org_id
         bolna_api_key
       }
+    }
+    leads_by_pk(id: $leadId) {
+      id
+      phone_number
+      organization_id
+      zitadel_org_id
     }
   }
 `;
@@ -56,22 +71,22 @@ const INSERT_CALL_LOG_MUTATION = `
 actionsRouter.post('/place-single-call', async (req: Request, res: Response) => {
   try {
     const payload = req.body as HasuraActionPayload<PlaceSingleCallInput>;
-    const { agentId, receiverPhoneNumber } = payload.input || {};
+    const { agentId, leadId } = payload.input || {};
 
-    if (!agentId || !receiverPhoneNumber) {
+    if (!agentId || !leadId) {
       res.status(400).json({
-        message: 'agentId and receiverPhoneNumber are required',
+        message: 'agentId and leadId are required',
       });
       return;
     }
 
-    // 1. Fetch agent & organization details from Hasura using admin query
-    const data = await queryHasuraAdmin<AgentAndOrgQueryResult>(
-      GET_AGENT_AND_ORG_QUERY,
-      { agentId }
+    const data = await queryHasuraAdmin<AgentAndLeadQueryResult>(
+      GET_AGENT_AND_LEAD_QUERY,
+      { agentId, leadId },
     );
 
     const agent = data.agents_by_pk;
+    const lead = data.leads_by_pk;
 
     if (!agent) {
       res.status(400).json({
@@ -80,8 +95,31 @@ actionsRouter.post('/place-single-call', async (req: Request, res: Response) => 
       return;
     }
 
+    if (!lead) {
+      res.status(400).json({
+        message: `Lead with id '${leadId}' not found`,
+      });
+      return;
+    }
+
+    if (lead.organization_id !== agent.organization_id) {
+      res.status(400).json({
+        message: 'Lead does not belong to the same organization as the agent',
+      });
+      return;
+    }
+
+    const recipientPhoneNumber = lead.phone_number;
     const bolnaAgentId = agent.bolna_agent_id;
-    const bolnaApiKey = agent.organization?.bolna_api_key ?? process.env['BOLNA_API_KEY'];
+    const bolnaApiKey =
+      agent.organization?.bolna_api_key ?? process.env['BOLNA_API_KEY'];
+
+    if (!recipientPhoneNumber) {
+      res.status(400).json({
+        message: 'Lead is missing phone_number',
+      });
+      return;
+    }
 
     if (!bolnaAgentId) {
       res.status(400).json({
@@ -97,16 +135,15 @@ actionsRouter.post('/place-single-call', async (req: Request, res: Response) => 
       return;
     }
 
-    // 2. Call Bolna API to place the call
     const result = await makeCall({
-      recipientPhoneNumber: receiverPhoneNumber,
+      recipientPhoneNumber,
       bolnaAgentId,
       bolnaApiKey,
     });
 
-    // 3. Immediately insert initial call log entry into database
-    const organizationId = agent.organization?.id;
-    const zitadelOrgId = agent.zitadel_org_id || agent.organization?.zitadel_org_id;
+    const organizationId = agent.organization?.id ?? agent.organization_id;
+    const zitadelOrgId =
+      agent.zitadel_org_id || agent.organization?.zitadel_org_id;
 
     if (organizationId && zitadelOrgId) {
       try {
@@ -115,9 +152,10 @@ actionsRouter.post('/place-single-call', async (req: Request, res: Response) => 
             organization_id: organizationId,
             zitadel_org_id: zitadelOrgId,
             agent_id: agent.id,
+            lead_id: lead.id,
             bolna_agent_id: bolnaAgentId,
             bolna_execution_id: result.executionId,
-            recipient_phone_number: receiverPhoneNumber,
+            recipient_phone_number: recipientPhoneNumber,
             status: 'queued',
           },
         });
@@ -126,15 +164,22 @@ actionsRouter.post('/place-single-call', async (req: Request, res: Response) => 
       }
     }
 
+    try {
+      await updateLeadOnCallPlaced(lead.id);
+    } catch (leadErr) {
+      console.error('Error updating lead on call placement:', leadErr);
+    }
+
     res.json({
       success: true,
       executionId: result.executionId,
       message: 'Call placed successfully',
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error in placeSingleCall action:', error);
     res.status(400).json({
-      message: error?.message || 'Failed to place call',
+      message:
+        error instanceof Error ? error.message : 'Failed to place call',
     });
   }
 });

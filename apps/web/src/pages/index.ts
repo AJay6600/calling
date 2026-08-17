@@ -9,3 +9,4 @@ export * from './CallLogsPage';
 export * from './AnalyticsPage';
 export * from './BillingPage';
 export * from './CallLogDetailPage';
+export * from './IndividualLeadDetailsPage';

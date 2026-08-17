@@ -1,0 +1,81 @@
+table:
+  name: leads
+  schema: public
+object_relationships:
+  - name: lead_status_enum
+    using:
+      foreign_key_constraint_on: status
+  - name: disposition_enum
+    using:
+      foreign_key_constraint_on: last_disposition_id
+  - name: organization
+    using:
+      foreign_key_constraint_on: organization_id
+array_relationships:
+  - name: call_logs
+    using:
+      foreign_key_constraint_on:
+        column: lead_id
+        table:
+          name: call_logs
+          schema: public
+select_permissions:
+  - role: anonymous
+    permission:
+      columns: '*'
+      filter:
+        zitadel_org_id:
+          _eq: x-hasura-zitadel-org-id
+    comment: ""
+  - role: user
+    permission:
+      columns: '*'
+      filter:
+        zitadel_org_id:
+          _eq: x-hasura-zitadel-org-id
+    comment: ""
+insert_permissions:
+  - role: anonymous
+    permission:
+      check:
+        zitadel_org_id:
+          _eq: x-hasura-zitadel-org-id
+      columns: '*'
+    comment: ""
+  - role: user
+    permission:
+      check:
+        zitadel_org_id:
+          _eq: x-hasura-zitadel-org-id
+      columns: '*'
+    comment: ""
+update_permissions:
+  - role: anonymous
+    permission:
+      columns: '*'
+      filter:
+        zitadel_org_id:
+          _eq: x-hasura-zitadel-org-id
+      check: null
+    comment: ""
+  - role: user
+    permission:
+      columns: '*'
+      filter:
+        zitadel_org_id:
+          _eq: x-hasura-zitadel-org-id
+      check: null
+    comment: ""
+delete_permissions:
+  - role: anonymous
+    permission:
+      filter:
+        zitadel_org_id:
+          _eq: x-hasura-zitadel-org-id
+    comment: ""
+  - role: user
+    permission:
+      filter:
+        zitadel_org_id:
+          _eq: x-hasura-zitadel-org-id
+    comment: ""

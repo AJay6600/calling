@@ -16,6 +16,7 @@ import {
   DashboardPage,
   CampaignsPage,
   LeadsPage,
+  IndividualLeadDetailsPage,
   AiAgentsPage,
   SingleCallPage,
   BulkCallPage,
@@ -104,6 +105,7 @@ export const App = () => {
         <Route index element={<DashboardPage />} />
         <Route path="campaigns" element={<CampaignsPage />} />
         <Route path="leads" element={<LeadsPage />} />
+        <Route path="leads/:id" element={<IndividualLeadDetailsPage />} />
         <Route path="ai-agents" element={<AiAgentsPage />} />
         <Route path="calls" element={<Navigate to="/calls/single" replace />} />
         <Route path="calls/single" element={<SingleCallPage />} />

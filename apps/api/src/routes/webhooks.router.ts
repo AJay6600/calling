@@ -1,5 +1,9 @@
 import { Router, Request, Response } from 'express';
 import { queryHasuraAdmin } from '../lib/hasuraClient';
+import {
+  normalizeDisposition,
+  updateLeadOnCallEnded,
+} from '../services/lead.service';
 
 export const webhooksRouter = Router();
 
@@ -10,6 +14,9 @@ const UPDATE_CALL_LOG_MUTATION = `
       _set: $changes
     ) {
       affected_rows
+      returning {
+        lead_id
+      }
     }
   }
 `;
@@ -65,25 +72,6 @@ webhooksRouter.post('/bolna', async (req: Request, res: Response) => {
       payload.disposition ||
       null;
 
-    const normalizeDisposition = (raw: string | null): string | null => {
-      if (!raw) return null;
-      const norm = raw.toLowerCase().trim();
-      if (norm === 'interested') return 'interested';
-      if (norm === 'not interested' || norm === 'not_interested') return 'not_interested';
-      if (norm === 'callback requested' || norm === 'callback_requested' || norm === 'callback') return 'callback_requested';
-      if (norm === 'voicemail') return 'voicemail';
-      if (norm === 'no answer' || norm === 'no_answer') return 'no_answer';
-      if (norm === 'do not call' || norm === 'do_not_call') return 'do_not_call';
-
-      if (norm.includes('not interested')) return 'not_interested';
-      if (norm.includes('do not call')) return 'do_not_call';
-      if (norm.includes('callback') || norm.includes('reschedule')) return 'callback_requested';
-      if (norm.includes('voicemail')) return 'voicemail';
-      if (norm.includes('no answer') || norm.includes('busy')) return 'no_answer';
-      if (norm.includes('interested')) return 'interested';
-      return null;
-    };
-
     const disposition = normalizeDisposition(rawDisposition);
 
     const summary =
@@ -113,13 +101,24 @@ webhooksRouter.post('/bolna', async (req: Request, res: Response) => {
       changes['initiated_at'] = payload.initiated_at;
     }
 
-    const result = await queryHasuraAdmin<{ update_call_logs: { affected_rows: number } }>(
-      UPDATE_CALL_LOG_MUTATION,
-      {
-        executionId,
-        changes,
-      },
-    );
+    const result = await queryHasuraAdmin<{
+      update_call_logs: {
+        affected_rows: number;
+        returning: Array<{ lead_id: string | null }>;
+      };
+    }>(UPDATE_CALL_LOG_MUTATION, {
+      executionId,
+      changes,
+    });
+
+    const leadId = result.update_call_logs?.returning?.[0]?.lead_id;
+    if (leadId) {
+      try {
+        await updateLeadOnCallEnded(leadId, disposition, status);
+      } catch (leadErr) {
+        console.error('Error updating lead on call end:', leadErr);
+      }
+    }
 
     res.json({
       success: true,

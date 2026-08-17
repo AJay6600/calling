@@ -63,7 +63,7 @@ export const Input = ({
             }
             rhfOnChange(e.target.value);
         },
-        className: `${hasError ? styles.textErrorInput : styles.textInput}`,
+        className: `custom-pill-input ${hasError ? styles.textErrorInput : styles.textInput}`,
         style: { ...customStyles },
         suffix: (
             <Tooltip title="Required field">

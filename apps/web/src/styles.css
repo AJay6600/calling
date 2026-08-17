@@ -332,6 +332,97 @@
   color: var(--primary, #00c391) !important;
 }
 
+.lead-form-modal .ant-modal-content {
+  background: var(--card, #101624) !important;
+  border: 1px solid var(--border, #272e3c) !important;
+  border-radius: 1.5rem !important;
+  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.55) !important;
+  padding: 8px 4px 16px !important;
+}
+
+.lead-form-modal .ant-modal-header {
+  background: transparent !important;
+  border-bottom: none !important;
+  padding: 20px 24px 8px !important;
+  margin-bottom: 0 !important;
+}
+
+.lead-form-modal .ant-modal-title {
+  color: var(--foreground, #f2f5f9) !important;
+  font-size: 1.125rem !important;
+  font-weight: 600 !important;
+}
+
+.lead-form-modal .ant-modal-close {
+  color: var(--muted-foreground, #9099a8) !important;
+}
+
+.lead-form-modal .ant-modal-close:hover {
+  color: var(--foreground, #f2f5f9) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+.lead-form-modal .ant-modal-body {
+  padding: 8px 24px 24px !important;
+}
+
+.lead-call-timeline.ant-timeline {
+  margin-top: 4px !important;
+}
+
+.lead-call-timeline .ant-timeline-item {
+  padding-bottom: 12px !important;
+}
+
+.lead-call-timeline .ant-timeline-item-tail {
+  border-inline-start-color: var(--border, #272e3c) !important;
+  inset-block-start: 14px !important;
+}
+
+.lead-call-timeline .ant-timeline-item-head {
+  background-color: var(--card, #101624) !important;
+  border-color: var(--primary, #00c391) !important;
+}
+
+.lead-call-timeline .ant-timeline-item-head-blue,
+.lead-call-timeline .ant-timeline-item-head-green {
+  border-color: var(--success, #22c55e) !important;
+  color: var(--success, #22c55e) !important;
+}
+
+.lead-call-timeline .ant-timeline-item-head-red {
+  border-color: var(--destructive, #ef4444) !important;
+  color: var(--destructive, #ef4444) !important;
+}
+
+.lead-call-timeline .ant-timeline-item-head-gray {
+  border-color: var(--border, #272e3c) !important;
+  color: var(--muted-foreground, #9099a8) !important;
+}
+
+.lead-call-timeline .ant-timeline-item-label {
+  width: 72px !important;
+  min-width: 72px !important;
+}
+
+.lead-call-timeline .lead-timeline-label .ant-typography {
+  color: var(--muted-foreground, #9099a8) !important;
+}
+
+.lead-call-timeline .lead-timeline-label .ant-typography:first-child {
+  color: var(--foreground, #f2f5f9) !important;
+}
+
+.lead-call-timeline .lead-timeline-item {
+  background-color: var(--surface-2, #141c2c) !important;
+  color: var(--foreground, #f2f5f9) !important;
+}
+
+.lead-call-timeline .lead-timeline-item-selected {
+  background-color: rgba(0, 195, 145, 0.1) !important;
+  border-color: rgba(0, 195, 145, 0.5) !important;
+}
+
 
 
 

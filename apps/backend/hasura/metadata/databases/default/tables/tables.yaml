@@ -3,6 +3,8 @@
 - "!include public_call_logs.yaml"
 - "!include public_call_status_enum.yaml"
 - "!include public_disposition_enum.yaml"
+- "!include public_lead_status_enum.yaml"
+- "!include public_leads.yaml"
 - "!include public_organizations.yaml"
 - "!include public_users.yaml"
 

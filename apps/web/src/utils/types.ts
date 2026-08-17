@@ -43,6 +43,30 @@ export type CallStatusEnumType = {
   label: string;
 };
 
+export type LeadStatusEnumType = {
+  id: string;
+  label: string;
+};
+
+export type LeadRecordType = {
+  id: string;
+  organization_id: string;
+  zitadel_org_id: string;
+  name?: string | null;
+  phone_number: string;
+  email?: string | null;
+  company_name?: string | null;
+  status: string;
+  lead_status_enum?: LeadStatusEnumType | null;
+  total_calls_count: number;
+  last_call_at?: string | null;
+  last_disposition_id?: string | null;
+  disposition_enum?: { id: string; label: string } | null;
+  created_at: string;
+  updated_at: string;
+  call_logs?: CallLogRecordType[];
+};
+
 export type CallLogRecordType = {
   id: string;
   organization_id: string;

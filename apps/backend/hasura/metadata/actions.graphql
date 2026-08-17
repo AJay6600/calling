@@ -1,7 +1,7 @@
 type Mutation {
   placeSingleCall(
     agentId: String!
-    receiverPhoneNumber: String!
+    leadId: String!
   ): PlaceSingleCallOutput
 }
 

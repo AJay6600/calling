@@ -5,45 +5,38 @@ import { OptionsDataType } from '../utils';
 import { Button, Col, Row } from 'antd';
 import { Select } from '../component/select/Select';
 import { FormItem } from '../component/form-item/FormItem';
-import { Input } from '../component/input/Input';
 import { IoCall } from 'react-icons/io5';
 
 export type SingleCallFormValues = {
   agentId: string;
-  receiverPhoneNumber: string;
+  leadId: string;
 };
 
 type SingleCallFormPropsType = {
   agentData: OptionsDataType[];
+  leadData: OptionsDataType[];
   onSubmit: (formData: SingleCallFormValues) => void | Promise<void>;
   loading?: boolean;
 };
 
-/** Matches Indian mobile numbers in E.164 format: +91 followed by a
- * 10-digit number starting with 6-9 (valid Indian mobile prefixes).
- * e.g. +919820144210
- */
-const indianPhoneRegex = /^\+91[6-9]\d{9}$/;
-
 const singleCallFormSchema = yup.object({
   agentId: yup.string().required('Agent is required'),
-  receiverPhoneNumber: yup
-    .string()
-    .required('Phone number is required')
-    .matches(
-      indianPhoneRegex,
-      'Enter a valid Indian phone number (e.g. +919820144210)',
-    ),
+  leadId: yup.string().required('Lead is required'),
 });
 
-const SingleCallForm = ({ agentData, onSubmit, loading }: SingleCallFormPropsType) => {
+const SingleCallForm = ({
+  agentData,
+  leadData,
+  onSubmit,
+  loading,
+}: SingleCallFormPropsType) => {
   const {
     control,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm<SingleCallFormValues>({
-    defaultValues: { agentId: undefined, receiverPhoneNumber: '' },
+    defaultValues: { agentId: undefined, leadId: undefined },
     mode: 'onChange',
     resolver: yupResolver(singleCallFormSchema),
   });
@@ -79,14 +72,15 @@ const SingleCallForm = ({ agentData, onSubmit, loading }: SingleCallFormPropsTyp
         <Col span={24}>
           <FormItem
             isRequired
-            label="Receiver Number"
-            errorText={errors && errors.receiverPhoneNumber && errors.receiverPhoneNumber.message}
+            label="Lead"
+            errorText={errors && errors.leadId && errors.leadId.message}
           >
-            <Input
-              name="receiverPhoneNumber"
-              placeholder="Enter phone number"
+            <Select
+              name="leadId"
+              placeholder="Select a lead"
               rhfControllerProps={{ control }}
-              hasError={!!errors.receiverPhoneNumber}
+              options={leadData}
+              hasError={!!errors.leadId}
             />
           </FormItem>
         </Col>
