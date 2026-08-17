@@ -1,0 +1,31 @@
+table:
+  name: call_logs
+  schema: public
+object_relationships:
+  - name: organization
+    using:
+      foreign_key_constraint_on: organization_id
+  - name: agent
+    using:
+      foreign_key_constraint_on: agent_id
+  - name: disposition_enum
+    using:
+      foreign_key_constraint_on: disposition
+  - name: call_status_enum
+    using:
+      foreign_key_constraint_on: status
+select_permissions:
+  - role: anonymous
+    permission:
+      columns: '*'
+      filter:
+        zitadel_org_id:
+          _eq: x-hasura-zitadel-org-id
+    comment: ""
+  - role: user
+    permission:
+      columns: '*'
+      filter:
+        zitadel_org_id:
+          _eq: x-hasura-zitadel-org-id
+    comment: ""

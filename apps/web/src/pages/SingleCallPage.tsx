@@ -1,5 +1,6 @@
 import { Card, Col, Row, message } from 'antd';
 import { useQuery, useMutation } from '@apollo/client/react';
+import { useNavigate } from 'react-router-dom';
 import { getAgentsDocument, placeSingleCallDocument } from '../graphql';
 import QueryLoading from '../component/query-loading/QueryLoading';
 import QueryError from '../component/query-error/QueryError';
@@ -7,6 +8,7 @@ import SingleCallForm, { SingleCallFormValues } from '../forms/SingleCallForm';
 import { OptionsDataType, getLanguageLabel } from '../utils';
 
 export const SingleCallPage = () => {
+  const navigate = useNavigate();
   const { data, loading, error } = useQuery(getAgentsDocument);
   const [placeSingleCall, { loading: mutationLoading }] = useMutation(placeSingleCallDocument);
 
@@ -38,6 +40,7 @@ export const SingleCallPage = () => {
       const result = response.data?.placeSingleCall;
       if (result?.success) {
         message.success(result.message || 'Call placed successfully');
+        navigate('/calls/logs');
       } else {
         const errorMsg = result?.message || 'Failed to place call';
         message.error(errorMsg);
