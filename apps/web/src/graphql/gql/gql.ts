@@ -16,6 +16,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 type Documents = {
     "\n  mutation DeleteLead($id: uuid!) {\n    delete_leads_by_pk(id: $id) {\n      id\n    }\n  }\n": typeof types.DeleteLeadDocument,
     "\n  mutation InsertLead($object: leads_insert_input!) {\n    insert_leads_one(object: $object) {\n      id\n      phone_number\n      name\n      email\n      company_name\n      status\n      created_at\n    }\n  }\n": typeof types.InsertLeadDocument,
+    "\n  mutation placeBulkCall($agentId: String!, $leads: [BulkLeadInput!]!) {\n    placeBulkCall(agentId: $agentId, leads: $leads) {\n      success\n      totalRequested\n      totalPlaced\n      totalSkipped\n      message\n    }\n  }\n": typeof types.PlaceBulkCallDocument,
     "\n  mutation placeSingleCall($agentId: String!, $leadId: String!) {\n    placeSingleCall(agentId: $agentId, leadId: $leadId) {\n      success\n      executionId\n      message\n    }\n  }\n": typeof types.PlaceSingleCallDocument,
     "\n  mutation UpdateLead($id: uuid!, $changes: leads_set_input!) {\n    update_leads_by_pk(pk_columns: { id: $id }, _set: $changes) {\n      id\n      phone_number\n      name\n      email\n      company_name\n      status\n      updated_at\n    }\n  }\n": typeof types.UpdateLeadDocument,
     "\n  query fileUploadS3Url($fileName: String!, $contentType: String!) {\n    fileUploadS3Url(fileName: $fileName, contentType: $contentType) {\n      url\n      key\n      policy\n      algorithm\n      credential\n      date\n      signature\n      contentType\n      contentDisposition\n    }\n  }\n": typeof types.FileUploadS3UrlDocument,
@@ -30,6 +31,7 @@ type Documents = {
 const documents: Documents = {
     "\n  mutation DeleteLead($id: uuid!) {\n    delete_leads_by_pk(id: $id) {\n      id\n    }\n  }\n": types.DeleteLeadDocument,
     "\n  mutation InsertLead($object: leads_insert_input!) {\n    insert_leads_one(object: $object) {\n      id\n      phone_number\n      name\n      email\n      company_name\n      status\n      created_at\n    }\n  }\n": types.InsertLeadDocument,
+    "\n  mutation placeBulkCall($agentId: String!, $leads: [BulkLeadInput!]!) {\n    placeBulkCall(agentId: $agentId, leads: $leads) {\n      success\n      totalRequested\n      totalPlaced\n      totalSkipped\n      message\n    }\n  }\n": types.PlaceBulkCallDocument,
     "\n  mutation placeSingleCall($agentId: String!, $leadId: String!) {\n    placeSingleCall(agentId: $agentId, leadId: $leadId) {\n      success\n      executionId\n      message\n    }\n  }\n": types.PlaceSingleCallDocument,
     "\n  mutation UpdateLead($id: uuid!, $changes: leads_set_input!) {\n    update_leads_by_pk(pk_columns: { id: $id }, _set: $changes) {\n      id\n      phone_number\n      name\n      email\n      company_name\n      status\n      updated_at\n    }\n  }\n": types.UpdateLeadDocument,
     "\n  query fileUploadS3Url($fileName: String!, $contentType: String!) {\n    fileUploadS3Url(fileName: $fileName, contentType: $contentType) {\n      url\n      key\n      policy\n      algorithm\n      credential\n      date\n      signature\n      contentType\n      contentDisposition\n    }\n  }\n": types.FileUploadS3UrlDocument,
@@ -64,6 +66,10 @@ export function graphql(source: "\n  mutation DeleteLead($id: uuid!) {\n    dele
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation InsertLead($object: leads_insert_input!) {\n    insert_leads_one(object: $object) {\n      id\n      phone_number\n      name\n      email\n      company_name\n      status\n      created_at\n    }\n  }\n"): (typeof documents)["\n  mutation InsertLead($object: leads_insert_input!) {\n    insert_leads_one(object: $object) {\n      id\n      phone_number\n      name\n      email\n      company_name\n      status\n      created_at\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation placeBulkCall($agentId: String!, $leads: [BulkLeadInput!]!) {\n    placeBulkCall(agentId: $agentId, leads: $leads) {\n      success\n      totalRequested\n      totalPlaced\n      totalSkipped\n      message\n    }\n  }\n"): (typeof documents)["\n  mutation placeBulkCall($agentId: String!, $leads: [BulkLeadInput!]!) {\n    placeBulkCall(agentId: $agentId, leads: $leads) {\n      success\n      totalRequested\n      totalPlaced\n      totalSkipped\n      message\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -4,6 +4,13 @@ type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 /** Internal type. DO NOT USE DIRECTLY. */
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
+export type BulkLeadInput = {
+  companyName?: string | null | undefined;
+  email?: string | null | undefined;
+  name?: string | null | undefined;
+  phoneNumber: string;
+};
+
 /** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
 export type Int_Comparison_Exp = {
   _eq?: number | null | undefined;
@@ -256,6 +263,7 @@ export type Call_Logs_Bool_Exp = {
   id?: Uuid_Comparison_Exp | null | undefined;
   initiated_at?: Timestamptz_Comparison_Exp | null | undefined;
   latency_data?: Jsonb_Comparison_Exp | null | undefined;
+  lead?: Leads_Bool_Exp | null | undefined;
   lead_id?: Uuid_Comparison_Exp | null | undefined;
   organization?: Organizations_Bool_Exp | null | undefined;
   organization_id?: Uuid_Comparison_Exp | null | undefined;
@@ -297,6 +305,7 @@ export type Call_Logs_Insert_Input = {
   id?: string | null | undefined;
   initiated_at?: string | null | undefined;
   latency_data?: any;
+  lead?: Leads_Obj_Rel_Insert_Input | null | undefined;
   lead_id?: string | null | undefined;
   organization?: Organizations_Obj_Rel_Insert_Input | null | undefined;
   organization_id?: string | null | undefined;
@@ -635,6 +644,15 @@ export type Lead_Status_Enum_Enum =
   /** Unreachable */
   | 'unreachable';
 
+/** Boolean expression to compare columns of type "lead_status_enum_enum". All fields are combined with logical 'AND'. */
+export type Lead_Status_Enum_Enum_Comparison_Exp = {
+  _eq?: Lead_Status_Enum_Enum | null | undefined;
+  _in?: Array<Lead_Status_Enum_Enum> | null | undefined;
+  _is_null?: boolean | null | undefined;
+  _neq?: Lead_Status_Enum_Enum | null | undefined;
+  _nin?: Array<Lead_Status_Enum_Enum> | null | undefined;
+};
+
 /** input type for inserting data into table "lead_status_enum" */
 export type Lead_Status_Enum_Insert_Input = {
   id?: string | null | undefined;
@@ -662,6 +680,38 @@ export type Lead_Status_Enum_Update_Column =
   /** column name */
   | 'label';
 
+/** Boolean expression to filter rows from the table "leads". All fields are combined with a logical 'AND'. */
+export type Leads_Bool_Exp = {
+  _and?: Array<Leads_Bool_Exp> | null | undefined;
+  _not?: Leads_Bool_Exp | null | undefined;
+  _or?: Array<Leads_Bool_Exp> | null | undefined;
+  call_logs?: Call_Logs_Bool_Exp | null | undefined;
+  call_logs_aggregate?: Call_Logs_Aggregate_Bool_Exp | null | undefined;
+  company_name?: String_Comparison_Exp | null | undefined;
+  created_at?: Timestamptz_Comparison_Exp | null | undefined;
+  disposition_enum?: Disposition_Enum_Bool_Exp | null | undefined;
+  email?: String_Comparison_Exp | null | undefined;
+  id?: Uuid_Comparison_Exp | null | undefined;
+  last_call_at?: Timestamptz_Comparison_Exp | null | undefined;
+  last_disposition_id?: Disposition_Enum_Enum_Comparison_Exp | null | undefined;
+  lead_status_enum?: Lead_Status_Enum_Bool_Exp | null | undefined;
+  name?: String_Comparison_Exp | null | undefined;
+  organization?: Organizations_Bool_Exp | null | undefined;
+  organization_id?: Uuid_Comparison_Exp | null | undefined;
+  phone_number?: String_Comparison_Exp | null | undefined;
+  status?: Lead_Status_Enum_Enum_Comparison_Exp | null | undefined;
+  total_calls_count?: Int_Comparison_Exp | null | undefined;
+  updated_at?: Timestamptz_Comparison_Exp | null | undefined;
+  zitadel_org_id?: String_Comparison_Exp | null | undefined;
+};
+
+/** unique or primary key constraints on table "leads" */
+export type Leads_Constraint =
+  /** unique or primary key constraint on columns "id" */
+  | 'leads_pkey'
+  /** unique or primary key constraint on columns "phone_number", "organization_id" */
+  | 'uq_leads_org_phone';
+
 /** input type for inserting data into table "leads" */
 export type Leads_Insert_Input = {
   call_logs?: Call_Logs_Arr_Rel_Insert_Input | null | undefined;
@@ -683,6 +733,20 @@ export type Leads_Insert_Input = {
   zitadel_org_id?: string | null | undefined;
 };
 
+/** input type for inserting object relation for remote table "leads" */
+export type Leads_Obj_Rel_Insert_Input = {
+  data: Leads_Insert_Input;
+  /** upsert condition */
+  on_conflict?: Leads_On_Conflict | null | undefined;
+};
+
+/** on_conflict condition type for table "leads" */
+export type Leads_On_Conflict = {
+  constraint: Leads_Constraint;
+  update_columns?: Array<Leads_Update_Column>;
+  where?: Leads_Bool_Exp | null | undefined;
+};
+
 /** input type for updating data in table "leads" */
 export type Leads_Set_Input = {
   company_name?: string | null | undefined;
@@ -699,6 +763,35 @@ export type Leads_Set_Input = {
   updated_at?: string | null | undefined;
   zitadel_org_id?: string | null | undefined;
 };
+
+/** update columns of table "leads" */
+export type Leads_Update_Column =
+  /** column name */
+  | 'company_name'
+  /** column name */
+  | 'created_at'
+  /** column name */
+  | 'email'
+  /** column name */
+  | 'id'
+  /** column name */
+  | 'last_call_at'
+  /** column name */
+  | 'last_disposition_id'
+  /** column name */
+  | 'name'
+  /** column name */
+  | 'organization_id'
+  /** column name */
+  | 'phone_number'
+  /** column name */
+  | 'status'
+  /** column name */
+  | 'total_calls_count'
+  /** column name */
+  | 'updated_at'
+  /** column name */
+  | 'zitadel_org_id';
 
 /** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
 export type Numeric_Comparison_Exp = {
@@ -922,6 +1015,14 @@ export type InsertLeadMutationVariables = Exact<{
 
 export type InsertLeadMutation = { insert_leads_one: { id: string, phone_number: string, name: string | null, email: string | null, company_name: string | null, status: Lead_Status_Enum_Enum, created_at: string } | null };
 
+export type PlaceBulkCallMutationVariables = Exact<{
+  agentId: string;
+  leads: Array<BulkLeadInput> | BulkLeadInput;
+}>;
+
+
+export type PlaceBulkCallMutation = { placeBulkCall: { success: boolean, totalRequested: number, totalPlaced: number, totalSkipped: number, message: string | null } | null };
+
 export type PlaceSingleCallMutationVariables = Exact<{
   agentId: string;
   leadId: string;
@@ -991,6 +1092,7 @@ export type GetOrganizationWithUserQuery = { organizations: Array<{ id: string, 
 
 export const DeleteLeadDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteLead"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"uuid"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"delete_leads_by_pk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<DeleteLeadMutation, DeleteLeadMutationVariables>;
 export const InsertLeadDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"InsertLead"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"object"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"leads_insert_input"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insert_leads_one"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"object"},"value":{"kind":"Variable","name":{"kind":"Name","value":"object"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"phone_number"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"company_name"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}}]}}]}}]} as unknown as DocumentNode<InsertLeadMutation, InsertLeadMutationVariables>;
+export const PlaceBulkCallDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"placeBulkCall"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"agentId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"leads"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"BulkLeadInput"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"placeBulkCall"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"agentId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"agentId"}}},{"kind":"Argument","name":{"kind":"Name","value":"leads"},"value":{"kind":"Variable","name":{"kind":"Name","value":"leads"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"totalRequested"}},{"kind":"Field","name":{"kind":"Name","value":"totalPlaced"}},{"kind":"Field","name":{"kind":"Name","value":"totalSkipped"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]} as unknown as DocumentNode<PlaceBulkCallMutation, PlaceBulkCallMutationVariables>;
 export const PlaceSingleCallDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"placeSingleCall"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"agentId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"leadId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"placeSingleCall"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"agentId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"agentId"}}},{"kind":"Argument","name":{"kind":"Name","value":"leadId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"leadId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"executionId"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]} as unknown as DocumentNode<PlaceSingleCallMutation, PlaceSingleCallMutationVariables>;
 export const UpdateLeadDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateLead"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"uuid"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"changes"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"leads_set_input"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"update_leads_by_pk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pk_columns"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"Variable","name":{"kind":"Name","value":"changes"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"phone_number"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"company_name"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]}}]} as unknown as DocumentNode<UpdateLeadMutation, UpdateLeadMutationVariables>;
 export const FileUploadS3UrlDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"fileUploadS3Url"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"fileName"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"contentType"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"fileUploadS3Url"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"fileName"},"value":{"kind":"Variable","name":{"kind":"Name","value":"fileName"}}},{"kind":"Argument","name":{"kind":"Name","value":"contentType"},"value":{"kind":"Variable","name":{"kind":"Name","value":"contentType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"policy"}},{"kind":"Field","name":{"kind":"Name","value":"algorithm"}},{"kind":"Field","name":{"kind":"Name","value":"credential"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"signature"}},{"kind":"Field","name":{"kind":"Name","value":"contentType"}},{"kind":"Field","name":{"kind":"Name","value":"contentDisposition"}}]}}]}}]} as unknown as DocumentNode<FileUploadS3UrlQuery, FileUploadS3UrlQueryVariables>;

@@ -8,9 +8,21 @@ actions:
       - role: anonymous
       - role: user
       - role: admin
+  - name: placeBulkCall
+    definition:
+      kind: synchronous
+      handler: "{{ACTION_BASE_URL}}/place-bulk-call"
+      forward_client_headers: true
+    permissions:
+      - role: anonymous
+      - role: user
+      - role: admin
 custom_types:
   enums: []
-  input_objects: []
+  input_objects:
+    - name: BulkLeadInput
   objects:
     - name: PlaceSingleCallOutput
+    - name: PlaceBulkCallOutput
   scalars: []
+

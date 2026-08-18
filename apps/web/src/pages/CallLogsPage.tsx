@@ -1,7 +1,7 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useQuery } from '@apollo/client/react';
-import { Button, Card, Typography } from 'antd';
+import { Alert, Button, Card, Typography } from 'antd';
 import { FiRefreshCw } from 'react-icons/fi';
 import { getCallLogsDocument } from '../graphql';
 import QueryLoading from '../component/query-loading/QueryLoading';
@@ -13,6 +13,9 @@ const { Text, Title } = Typography;
 
 export const CallLogsPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const locationState = location.state as { bulkCallNotice?: string } | null;
+
   const { data, loading, error, refetch } = useQuery(getCallLogsDocument, {
     pollInterval: 5000,
     fetchPolicy: 'cache-and-network',
@@ -29,7 +32,18 @@ export const CallLogsPage = () => {
   };
 
   return (
-    <div className="space-y-6 w-full p-2 sm:p-4">
+    <div className="flex flex-col gap-6 w-full p-2 sm:p-4">
+      {locationState?.bulkCallNotice && (
+        <Alert
+          type="info"
+          showIcon
+          closable
+          message="Bulk Call Campaign Initiated"
+          description={locationState.bulkCallNotice}
+          className="rounded-2xl border-primary/30 bg-primary/5"
+        />
+      )}
+
       <Card
         className="bg-card! border! border-sidebar-border! rounded-3xl! shadow-xl w-full"
         bodyStyle={{ padding: 24 }}

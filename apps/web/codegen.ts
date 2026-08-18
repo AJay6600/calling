@@ -38,11 +38,26 @@ const config: CodegenConfig = {
         executionId: String
         message: String
       }
+      input BulkLeadInput {
+        phoneNumber: String!
+        name: String
+        email: String
+        companyName: String
+      }
+      type PlaceBulkCallOutput {
+        success: Boolean!
+        totalRequested: Int!
+        totalPlaced: Int!
+        totalSkipped: Int!
+        message: String
+      }
       extend type mutation_root {
         placeSingleCall(agentId: String!, leadId: String!): PlaceSingleCallOutput
+        placeBulkCall(agentId: String!, leads: [BulkLeadInput!]!): PlaceBulkCallOutput
       }
       extend type Mutation {
         placeSingleCall(agentId: String!, leadId: String!): PlaceSingleCallOutput
+        placeBulkCall(agentId: String!, leads: [BulkLeadInput!]!): PlaceBulkCallOutput
       }
       extend type call_logs {
         lead: leads

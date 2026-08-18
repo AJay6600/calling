@@ -3,6 +3,17 @@ type Mutation {
     agentId: String!
     leadId: String!
   ): PlaceSingleCallOutput
+  placeBulkCall(
+    agentId: String!
+    leads: [BulkLeadInput!]!
+  ): PlaceBulkCallOutput
+}
+
+input BulkLeadInput {
+  phoneNumber: String!
+  name: String
+  email: String
+  companyName: String
 }
 
 type PlaceSingleCallOutput {
@@ -10,4 +21,13 @@ type PlaceSingleCallOutput {
   executionId: String
   message: String
 }
+
+type PlaceBulkCallOutput {
+  success: Boolean!
+  totalRequested: Int!
+  totalPlaced: Int!
+  totalSkipped: Int!
+  message: String
+}
+
 
