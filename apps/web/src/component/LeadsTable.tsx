@@ -261,10 +261,17 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
         ),
       }}
       className="leads-table w-full"
-      onRow={(record) => ({
-        onClick: () => onView(record),
-        className: 'cursor-pointer',
-      })}
+      onRow={(record) => {
+        const hasCalls = (record.total_calls_count ?? 0) > 0;
+        return {
+          onClick: () => {
+            if (hasCalls) {
+              onView(record);
+            }
+          },
+          className: hasCalls ? 'cursor-pointer' : 'cursor-default',
+        };
+      }}
     />
   );
 };

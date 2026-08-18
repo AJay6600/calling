@@ -44,6 +44,9 @@ const config: CodegenConfig = {
       extend type Mutation {
         placeSingleCall(agentId: String!, leadId: String!): PlaceSingleCallOutput
       }
+      extend type call_logs {
+        lead: leads
+      }
     `,
   ],
   documents: ['apps/web/src/graphql/**/*.{ts,tsx,graphql}'],

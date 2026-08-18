@@ -11,6 +11,7 @@ import {
   insertLeadDocument,
   updateLeadDocument,
   deleteLeadDocument,
+  Lead_Status_Enum_Enum,
 } from '../graphql';
 import QueryLoading from '../component/query-loading/QueryLoading';
 import QueryError from '../component/query-error/QueryError';
@@ -36,7 +37,7 @@ const toLeadChanges = (values: LeadFormValues) => ({
   name: values.fullName.trim() || null,
   email: values.email.trim() || null,
   company_name: values.companyName.trim() || null,
-  status: values.status || 'new',
+  status: (values.status || 'new') as Lead_Status_Enum_Enum,
 });
 
 export const LeadsPage = () => {

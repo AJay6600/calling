@@ -1,11 +1,13 @@
+// SingleCallForm.tsx
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { OptionsDataType } from '../utils';
-import { Button, Col, Row } from 'antd';
+import { Button, Col, Divider, Row } from 'antd';
 import { Select } from '../component/select/Select';
 import { FormItem } from '../component/form-item/FormItem';
 import { IoCall } from 'react-icons/io5';
+import { FiUserPlus } from 'react-icons/fi';
 
 export type SingleCallFormValues = {
   agentId: string;
@@ -16,6 +18,7 @@ type SingleCallFormPropsType = {
   agentData: OptionsDataType[];
   leadData: OptionsDataType[];
   onSubmit: (formData: SingleCallFormValues) => void | Promise<void>;
+  onAddLeadClick: () => void;
   loading?: boolean;
 };
 
@@ -24,10 +27,25 @@ const singleCallFormSchema = yup.object({
   leadId: yup.string().required('Lead is required'),
 });
 
+/**
+ * Matches typed search text against an option's label, case-insensitive.
+ * antd calls this per-option on every keystroke, so it's kept as a plain
+ * top-level function rather than an inline closure in the Select prop.
+ */
+const filterLeadOption = (
+  inputValue: string,
+  option?: { label?: React.ReactNode },
+) => {
+  const label = String(option?.label ?? '');
+
+  return label.toLowerCase().includes(inputValue.toLowerCase());
+};
+
 const SingleCallForm = ({
   agentData,
   leadData,
   onSubmit,
+  onAddLeadClick,
   loading,
 }: SingleCallFormPropsType) => {
   const {
@@ -49,6 +67,30 @@ const SingleCallForm = ({
       // Keep form inputs on error
     }
   };
+
+  /**
+   * Appends an "Add Lead" action below the options list inside the Lead
+   * select's dropdown, so users can create a lead without leaving this
+   * form. The mousedown handler is stopped/prevented because antd Select
+   * closes its dropdown and steals focus on mousedown before the click
+   * event fires, which would otherwise swallow the click.
+   */
+  const renderLeadDropdown = (menu: React.ReactNode) => (
+    <>
+      {menu}
+      <Divider className="my-2! bg-sidebar-border!" />
+      <Button
+        type="text"
+        block
+        icon={<FiUserPlus />}
+        className="text-left! justify-start! text-foreground! hover:text-primary!"
+        onMouseDown={(event) => event.preventDefault()}
+        onClick={onAddLeadClick}
+      >
+        Add Lead
+      </Button>
+    </>
+  );
 
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)}>
@@ -77,10 +119,16 @@ const SingleCallForm = ({
           >
             <Select
               name="leadId"
-              placeholder="Select a lead"
+              placeholder="Search or select a lead"
               rhfControllerProps={{ control }}
               options={leadData}
               hasError={!!errors.leadId}
+              antdSelectProps={{
+                showSearch: true,
+                optionFilterProp: 'label',
+                filterOption: filterLeadOption,
+                dropdownRender: renderLeadDropdown,
+              }}
             />
           </FormItem>
         </Col>

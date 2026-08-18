@@ -475,6 +475,28 @@ export const CallLogsTable: React.FC<CallLogsTableProps> = ({
       ),
     },
     {
+      title: 'Lead Name',
+      key: 'lead_name',
+      filterIcon: (filtered) => (
+        <FiSearch
+          size={13}
+          className={filtered ? 'text-primary!' : 'text-muted-foreground!'}
+        />
+      ),
+      filterDropdown: (props) => (
+        <SearchFilterDropdown {...props} placeholder="Search lead name" />
+      ),
+      onFilter: (value, record) =>
+        (record.lead?.name || '')
+          .toLowerCase()
+          .includes((value as string).toLowerCase()),
+      render: (_, record) => (
+        <Text className="text-xs! sm:text-sm! text-foreground! font-medium">
+          {record.lead?.name?.trim() || '—'}
+        </Text>
+      ),
+    },
+    {
       title: 'Agent',
       key: 'agent',
       filters: agentFilters,

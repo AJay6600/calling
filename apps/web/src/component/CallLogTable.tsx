@@ -202,6 +202,15 @@ export const CallLogTable: React.FC<CallLogTableProps> = ({
             ),
         },
         {
+            title: 'Lead Name',
+            key: 'lead_name',
+            render: (_, record) => (
+                <Text className="text-xs sm:text-sm font-medium text-foreground">
+                    {record.lead?.name?.trim() || '—'}
+                </Text>
+            ),
+        },
+        {
             title: 'Agent',
             key: 'agent',
             render: (_, record) => (
