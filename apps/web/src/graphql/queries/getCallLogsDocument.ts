@@ -36,6 +36,11 @@ export const getCallLogsDocument = graphql(`
       initiated_at
       created_at
       updated_at
+      lead {
+        id
+        name
+        phone_number
+      }
       agent {
         id
         name

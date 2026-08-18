@@ -39,10 +39,13 @@ const config: CodegenConfig = {
         message: String
       }
       extend type mutation_root {
-        placeSingleCall(agentId: String!, receiverPhoneNumber: String!): PlaceSingleCallOutput
+        placeSingleCall(agentId: String!, leadId: String!): PlaceSingleCallOutput
       }
       extend type Mutation {
-        placeSingleCall(agentId: String!, receiverPhoneNumber: String!): PlaceSingleCallOutput
+        placeSingleCall(agentId: String!, leadId: String!): PlaceSingleCallOutput
+      }
+      extend type call_logs {
+        lead: leads
       }
     `,
   ],

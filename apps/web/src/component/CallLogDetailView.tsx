@@ -385,7 +385,9 @@ export const CallLogDetailView: React.FC<CallLogDetailViewProps> = ({
             </span>
             <div>
               <Title level={3} className="m-0! text-foreground!">
-                {record.recipient_phone_number}
+                {record.lead?.name
+                  ? `${record.lead.name} (${record.recipient_phone_number})`
+                  : record.recipient_phone_number}
               </Title>
               <Text className="text-muted-foreground! text-sm!">
                 {formatDate(record.created_at)}
@@ -442,7 +444,12 @@ export const CallLogDetailView: React.FC<CallLogDetailViewProps> = ({
             <Text className="text-muted-foreground! text-xs! uppercase! tracking-wide! block mb-3">
               Call Meta
             </Text>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+              <TechField
+                icon={<FiUser size={13} />}
+                label="Lead Name"
+                value={record.lead?.name}
+              />
               <TechField
                 icon={<FiPhoneCall size={13} />}
                 label="Call Type"
