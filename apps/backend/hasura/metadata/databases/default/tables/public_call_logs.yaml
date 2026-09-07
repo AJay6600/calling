@@ -17,6 +17,9 @@ object_relationships:
   - name: lead
     using:
       foreign_key_constraint_on: lead_id
+  - name: campaign
+    using:
+      foreign_key_constraint_on: campaign_id
 select_permissions:
   - role: anonymous
     permission:
@@ -24,6 +27,7 @@ select_permissions:
       filter:
         zitadel_org_id:
           _eq: x-hasura-zitadel-org-id
+      allow_aggregations: true
     comment: ""
   - role: user
     permission:
@@ -31,4 +35,5 @@ select_permissions:
       filter:
         zitadel_org_id:
           _eq: x-hasura-zitadel-org-id
+      allow_aggregations: true
     comment: ""

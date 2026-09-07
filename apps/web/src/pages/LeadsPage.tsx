@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
 import { useQuery, useMutation } from '@apollo/client/react';
 import { Button, Card, Modal, message } from 'antd';
@@ -42,6 +42,7 @@ const toLeadChanges = (values: LeadFormValues) => ({
 
 export const LeadsPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const auth = useAuth();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [formMode, setFormMode] = useState<'create' | 'edit'>('create');
@@ -235,7 +236,7 @@ export const LeadsPage = () => {
           data={leads}
           loading={leadsLoading}
           deletingLeadId={deletingLeadId}
-          onView={(lead) => navigate(`/leads/${lead.id}`)}
+          onView={(lead) => navigate(`/leads/${lead.id}`, { state: { from: location.pathname } })}
           onEdit={handleEditLead}
           onDelete={handleDeleteLead}
         />

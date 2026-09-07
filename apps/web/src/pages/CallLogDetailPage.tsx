@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useQuery } from '@apollo/client/react';
 import { Button, Result } from 'antd';
 import { FiArrowLeft } from 'react-icons/fi';
@@ -13,6 +13,8 @@ import { useSetPageHeader } from '../contexts/PageHeaderContext';
 export const CallLogDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
+  const fromPath = (location.state as { from?: string } | null)?.from;
 
   const { data, loading, error } = useQuery(getCallLogByIdDocument, {
     variables: { id: id ?? '' },
@@ -20,7 +22,13 @@ export const CallLogDetailPage = () => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const handleBack = () => navigate('/calls/logs');
+  const handleBack = () => {
+    if (fromPath) {
+      navigate(fromPath);
+    } else {
+      navigate('/calls/logs');
+    }
+  };
 
   // total_cost comes back as `unknown` from codegen because it maps to a
   // custom numeric scalar with no scalar type mapping configured. Cast it

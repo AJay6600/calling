@@ -51,13 +51,67 @@ const config: CodegenConfig = {
         totalSkipped: Int!
         message: String
       }
+      input CampaignLeadInput {
+        phoneNumber: String!
+        name: String
+        email: String
+        companyName: String
+        customFields: String
+      }
+      type CreateCampaignOutput {
+        success: Boolean!
+        campaignId: String
+        message: String
+      }
+      type RunCampaignOutput {
+        success: Boolean!
+        status: String!
+        totalPlaced: Int
+        message: String
+      }
+      type StopCampaignOutput {
+        success: Boolean!
+        message: String
+      }
       extend type mutation_root {
         placeSingleCall(agentId: String!, leadId: String!): PlaceSingleCallOutput
         placeBulkCall(agentId: String!, leads: [BulkLeadInput!]!): PlaceBulkCallOutput
+        createCampaign(
+          name: String!
+          agentId: String!
+          leadSourceType: String!
+          leads: [CampaignLeadInput!]
+          leadIds: [String!]
+          autoRetryEnabled: Boolean
+          autoRetryConditions: [String!]
+          autoRetryMaxAttempts: Int
+          autoRetryGapMinutes: Int
+          callingWindowStart: String
+          callingWindowEnd: String
+          callingWindowTimezone: String
+        ): CreateCampaignOutput
+        runCampaign(campaignId: String!, scheduledAt: String): RunCampaignOutput
+        stopCampaign(campaignId: String!): StopCampaignOutput
       }
       extend type Mutation {
         placeSingleCall(agentId: String!, leadId: String!): PlaceSingleCallOutput
         placeBulkCall(agentId: String!, leads: [BulkLeadInput!]!): PlaceBulkCallOutput
+        createCampaign(
+          name: String!
+          agentId: String!
+          leadSourceType: String!
+          leads: [CampaignLeadInput!]
+          leadIds: [String!]
+          autoRetryEnabled: Boolean
+          autoRetryConditions: [String!]
+          autoRetryMaxAttempts: Int
+          autoRetryGapMinutes: Int
+          callingWindowStart: String
+          callingWindowEnd: String
+          callingWindowTimezone: String
+        ): CreateCampaignOutput
+        runCampaign(campaignId: String!, scheduledAt: String): RunCampaignOutput
+        stopCampaign(campaignId: String!): StopCampaignOutput
       }
       extend type call_logs {
         lead: leads

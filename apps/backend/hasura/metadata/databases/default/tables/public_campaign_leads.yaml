@@ -1,0 +1,56 @@
+table:
+  name: campaign_leads
+  schema: public
+object_relationships:
+  - name: campaign
+    using:
+      foreign_key_constraint_on: campaign_id
+  - name: lead
+    using:
+      foreign_key_constraint_on: lead_id
+select_permissions:
+  - role: anonymous
+    permission:
+      columns: '*'
+      filter: {}
+      allow_aggregations: true
+    comment: ""
+  - role: user
+    permission:
+      columns: '*'
+      filter: {}
+      allow_aggregations: true
+    comment: ""
+insert_permissions:
+  - role: anonymous
+    permission:
+      check: {}
+      columns: '*'
+    comment: ""
+  - role: user
+    permission:
+      check: {}
+      columns: '*'
+    comment: ""
+update_permissions:
+  - role: anonymous
+    permission:
+      columns: '*'
+      filter: {}
+      check: null
+    comment: ""
+  - role: user
+    permission:
+      columns: '*'
+      filter: {}
+      check: null
+    comment: ""
+delete_permissions:
+  - role: anonymous
+    permission:
+      filter: {}
+    comment: ""
+  - role: user
+    permission:
+      filter: {}
+    comment: ""

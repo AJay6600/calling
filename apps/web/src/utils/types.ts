@@ -100,5 +100,8 @@ export type CallLogRecordType = {
   created_at: string;
   updated_at: string;
   agent?: { id: string; name: string; language_id?: string | null } | null;
+  lead_id?: string | null;
   lead?: { id: string; name?: string | null; phone_number: string } | null;
+  campaign_id?: string | null;
+  campaign?: { id: string; name: string } | null;
 };
