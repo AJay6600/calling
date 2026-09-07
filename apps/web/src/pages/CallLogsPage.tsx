@@ -28,7 +28,7 @@ export const CallLogsPage = () => {
     (data?.call_logs as CallLogRecordType[]) || [];
 
   const handleViewDetails = (record: CallLogRecordType) => {
-    navigate(`/calls/logs/${record.id}`);
+    navigate(`/calls/logs/${record.id}`, { state: { from: location.pathname } });
   };
 
   return (

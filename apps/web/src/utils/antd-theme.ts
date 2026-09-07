@@ -53,6 +53,15 @@ export const getAntdThemeConfig = (styles: CSSStyleDeclaration) => {
       colorTextBase: secondaryColor,
     },
     components: {
+      Modal: {
+        contentBg: popoverColor,
+        headerBg: popoverColor,
+        footerBg: popoverColor,
+        titleColor: foregroundColor,
+        colorIcon: mutedForegroundColor,
+        colorIconHover: foregroundColor,
+        colorBgMask: 'rgba(0, 0, 0, 0.75)',
+      },
       Menu: {
         itemBorderRadius: 10,
         itemMarginBlock: 4,
@@ -106,10 +115,13 @@ export const getAntdThemeConfig = (styles: CSSStyleDeclaration) => {
         defaultColor: foregroundColor,
       },
       Segmented: {
+        itemColor: secondaryForegroundColor,
+        itemHoverColor: foregroundColor,
         itemActiveBg: secondaryForegroundColor,
-        itemHoverBg: secondaryForegroundColor,
+        itemHoverBg: 'rgba(255, 255, 255, 0.08)',
         itemSelectedBg: primaryColor,
         itemSelectedColor: primaryForegroundColor,
+        trackBg: 'rgba(0, 0, 0, 0.25)',
       },
       Select: {
         borderRadius: controlRadius,

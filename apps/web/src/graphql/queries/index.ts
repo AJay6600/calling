@@ -6,4 +6,7 @@ export * from './getCallLogByIdDocument';
 export * from './getLeadsDocument';
 export * from './getLeadByIdDocument';
 export * from './getLeadStatusesDocument';
+export * from './getCampaignsDocument';
+export * from './getCampaignByIdDocument';
+
 

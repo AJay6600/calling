@@ -16,6 +16,7 @@ const UPDATE_CALL_LOG_MUTATION = `
       affected_rows
       returning {
         lead_id
+        campaign_id
       }
     }
   }
@@ -104,19 +105,70 @@ webhooksRouter.post('/bolna', async (req: Request, res: Response) => {
     const result = await queryHasuraAdmin<{
       update_call_logs: {
         affected_rows: number;
-        returning: Array<{ lead_id: string | null }>;
+        returning: Array<{ lead_id: string | null; campaign_id: string | null }>;
       };
     }>(UPDATE_CALL_LOG_MUTATION, {
       executionId,
       changes,
     });
 
-    const leadId = result.update_call_logs?.returning?.[0]?.lead_id;
+    const returningItem = result.update_call_logs?.returning?.[0];
+    const leadId = returningItem?.lead_id;
+    const campaignId = returningItem?.campaign_id;
+
     if (leadId) {
       try {
         await updateLeadOnCallEnded(leadId, disposition, status);
       } catch (leadErr) {
         console.error('Error updating lead on call end:', leadErr);
+      }
+    }
+
+    if (campaignId) {
+      try {
+        const checkLogsData = await queryHasuraAdmin<{
+          call_logs_aggregate: {
+            aggregate: {
+              count: number;
+            };
+          };
+        }>(
+          `
+          query CheckPendingCampaignCalls($campaignId: uuid!) {
+            call_logs_aggregate(
+              where: {
+                campaign_id: { _eq: $campaignId }
+                status: { _in: ["queued", "initiated", "ringing", "in_progress"] }
+              }
+            ) {
+              aggregate {
+                count
+              }
+            }
+          }
+        `,
+          { campaignId },
+        );
+
+        const pendingCount =
+          checkLogsData.call_logs_aggregate?.aggregate?.count ?? 0;
+        if (pendingCount === 0) {
+          await queryHasuraAdmin(
+            `
+            mutation CompleteCampaign($campaignId: uuid!, $completedAt: timestamptz!) {
+              update_campaigns_by_pk(
+                pk_columns: { id: $campaignId }
+                _set: { status: "completed", completed_at: $completedAt }
+              ) {
+                id
+              }
+            }
+          `,
+            { campaignId, completedAt: new Date().toISOString() },
+          );
+        }
+      } catch (cErr) {
+        console.error('Error auto-completing campaign:', cErr);
       }
     }
 

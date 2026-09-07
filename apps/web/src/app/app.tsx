@@ -15,6 +15,8 @@ import {
   AuthCallbackPage,
   DashboardPage,
   CampaignsPage,
+  CreateCampaignPage,
+  CampaignDetailPage,
   LeadsPage,
   IndividualLeadDetailsPage,
   AiAgentsPage,
@@ -104,6 +106,8 @@ export const App = () => {
       >
         <Route index element={<DashboardPage />} />
         <Route path="campaigns" element={<CampaignsPage />} />
+        <Route path="campaigns/new" element={<CreateCampaignPage />} />
+        <Route path="campaigns/:id" element={<CampaignDetailPage />} />
         <Route path="leads" element={<LeadsPage />} />
         <Route path="leads/:id" element={<IndividualLeadDetailsPage />} />
         <Route path="ai-agents" element={<AiAgentsPage />} />

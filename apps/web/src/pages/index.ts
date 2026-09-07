@@ -1,6 +1,8 @@
 export * from './AuthCallbackPage';
 export * from './DashboardPage';
 export * from './CampaignsPage';
+export * from './CreateCampaignPage';
+export * from './CampaignDetailPage';
 export * from './LeadsPage';
 export * from './AiAgentsPage';
 export * from './SingleCallPage';
@@ -10,3 +12,4 @@ export * from './AnalyticsPage';
 export * from './BillingPage';
 export * from './CallLogDetailPage';
 export * from './IndividualLeadDetailsPage';
+

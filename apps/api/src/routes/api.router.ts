@@ -37,5 +37,6 @@ apiRouter.use('/calls', zitadelAuthMiddleware, ensureOrganizationMiddleware, cal
 apiRouter.use('/auth', zitadelAuthMiddleware, ensureOrganizationMiddleware, authRouter);
 
 apiRouter.use('/actions', actionsRouter);
+apiRouter.use('/', actionsRouter);
 
 apiRouter.use('/webhooks', webhooksRouter);

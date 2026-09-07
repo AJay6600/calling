@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useQuery } from '@apollo/client/react';
 import { Button, Card, Empty, Result, Tag, Typography } from 'antd';
 import {
@@ -221,6 +221,8 @@ const CallTimelineRow: React.FC<CallTimelineRowProps> = ({
 export const IndividualLeadDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
+  const fromPath = (location.state as { from?: string } | null)?.from;
   const [selectedCallId, setSelectedCallId] = useState<string | null>(null);
 
   const { data, loading, error } = useQuery(getLeadByIdDocument, {
@@ -254,7 +256,13 @@ export const IndividualLeadDetailsPage = () => {
     }
   }, [callLogs, selectedCallId]);
 
-  const handleBack = () => navigate('/leads');
+  const handleBack = () => {
+    if (fromPath) {
+      navigate(fromPath);
+    } else {
+      navigate('/leads');
+    }
+  };
 
   const leadTitle = lead?.name?.trim() || lead?.phone_number || 'Lead Details';
 

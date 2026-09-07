@@ -17,12 +17,43 @@ actions:
       - role: anonymous
       - role: user
       - role: admin
+  - name: createCampaign
+    definition:
+      kind: synchronous
+      handler: "{{ACTION_BASE_URL}}/create-campaign"
+      forward_client_headers: true
+    permissions:
+      - role: anonymous
+      - role: user
+      - role: admin
+  - name: runCampaign
+    definition:
+      kind: synchronous
+      handler: "{{ACTION_BASE_URL}}/run-campaign"
+      forward_client_headers: true
+    permissions:
+      - role: anonymous
+      - role: user
+      - role: admin
+  - name: stopCampaign
+    definition:
+      kind: synchronous
+      handler: "{{ACTION_BASE_URL}}/stop-campaign"
+      forward_client_headers: true
+    permissions:
+      - role: anonymous
+      - role: user
+      - role: admin
 custom_types:
   enums: []
   input_objects:
     - name: BulkLeadInput
+    - name: CampaignLeadInput
   objects:
     - name: PlaceSingleCallOutput
     - name: PlaceBulkCallOutput
+    - name: CreateCampaignOutput
+    - name: RunCampaignOutput
+    - name: StopCampaignOutput
   scalars: []
 

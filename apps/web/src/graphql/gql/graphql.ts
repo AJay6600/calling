@@ -4,8 +4,29 @@ type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 /** Internal type. DO NOT USE DIRECTLY. */
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
+/** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
+export type Boolean_Comparison_Exp = {
+  _eq?: boolean | null | undefined;
+  _gt?: boolean | null | undefined;
+  _gte?: boolean | null | undefined;
+  _in?: Array<boolean> | null | undefined;
+  _is_null?: boolean | null | undefined;
+  _lt?: boolean | null | undefined;
+  _lte?: boolean | null | undefined;
+  _neq?: boolean | null | undefined;
+  _nin?: Array<boolean> | null | undefined;
+};
+
 export type BulkLeadInput = {
   companyName?: string | null | undefined;
+  email?: string | null | undefined;
+  name?: string | null | undefined;
+  phoneNumber: string;
+};
+
+export type CampaignLeadInput = {
+  companyName?: string | null | undefined;
+  customFields?: string | null | undefined;
   email?: string | null | undefined;
   name?: string | null | undefined;
   phoneNumber: string;
@@ -253,6 +274,8 @@ export type Call_Logs_Bool_Exp = {
   bolna_execution_id?: String_Comparison_Exp | null | undefined;
   call_status_enum?: Call_Status_Enum_Bool_Exp | null | undefined;
   call_type?: String_Comparison_Exp | null | undefined;
+  campaign?: Campaigns_Bool_Exp | null | undefined;
+  campaign_id?: Uuid_Comparison_Exp | null | undefined;
   created_at?: Timestamptz_Comparison_Exp | null | undefined;
   disposition?: Disposition_Enum_Enum_Comparison_Exp | null | undefined;
   disposition_enum?: Disposition_Enum_Bool_Exp | null | undefined;
@@ -295,6 +318,8 @@ export type Call_Logs_Insert_Input = {
   bolna_execution_id?: string | null | undefined;
   call_status_enum?: Call_Status_Enum_Obj_Rel_Insert_Input | null | undefined;
   call_type?: string | null | undefined;
+  campaign?: Campaigns_Obj_Rel_Insert_Input | null | undefined;
+  campaign_id?: string | null | undefined;
   created_at?: string | null | undefined;
   disposition?: Disposition_Enum_Enum | null | undefined;
   disposition_enum?: Disposition_Enum_Obj_Rel_Insert_Input | null | undefined;
@@ -340,6 +365,8 @@ export type Call_Logs_Select_Column =
   | 'bolna_execution_id'
   /** column name */
   | 'call_type'
+  /** column name */
+  | 'campaign_id'
   /** column name */
   | 'created_at'
   /** column name */
@@ -395,6 +422,8 @@ export type Call_Logs_Update_Column =
   | 'bolna_execution_id'
   /** column name */
   | 'call_type'
+  /** column name */
+  | 'campaign_id'
   /** column name */
   | 'created_at'
   /** column name */
@@ -519,6 +548,320 @@ export type Call_Status_Enum_Update_Column =
   | 'id'
   /** column name */
   | 'label';
+
+export type Campaign_Leads_Aggregate_Bool_Exp = {
+  count?: Campaign_Leads_Aggregate_Bool_Exp_Count | null | undefined;
+};
+
+export type Campaign_Leads_Aggregate_Bool_Exp_Count = {
+  arguments?: Array<Campaign_Leads_Select_Column> | null | undefined;
+  distinct?: boolean | null | undefined;
+  filter?: Campaign_Leads_Bool_Exp | null | undefined;
+  predicate: Int_Comparison_Exp;
+};
+
+/** input type for inserting array relation for remote table "campaign_leads" */
+export type Campaign_Leads_Arr_Rel_Insert_Input = {
+  data: Array<Campaign_Leads_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: Campaign_Leads_On_Conflict | null | undefined;
+};
+
+/** Boolean expression to filter rows from the table "campaign_leads". All fields are combined with a logical 'AND'. */
+export type Campaign_Leads_Bool_Exp = {
+  _and?: Array<Campaign_Leads_Bool_Exp> | null | undefined;
+  _not?: Campaign_Leads_Bool_Exp | null | undefined;
+  _or?: Array<Campaign_Leads_Bool_Exp> | null | undefined;
+  attempts_count?: Int_Comparison_Exp | null | undefined;
+  campaign?: Campaigns_Bool_Exp | null | undefined;
+  campaign_id?: Uuid_Comparison_Exp | null | undefined;
+  created_at?: Timestamptz_Comparison_Exp | null | undefined;
+  id?: Uuid_Comparison_Exp | null | undefined;
+  lead?: Leads_Bool_Exp | null | undefined;
+  lead_id?: Uuid_Comparison_Exp | null | undefined;
+  status?: String_Comparison_Exp | null | undefined;
+  updated_at?: Timestamptz_Comparison_Exp | null | undefined;
+  variables?: Jsonb_Comparison_Exp | null | undefined;
+};
+
+/** unique or primary key constraints on table "campaign_leads" */
+export type Campaign_Leads_Constraint =
+  /** unique or primary key constraint on columns "id" */
+  | 'campaign_leads_pkey'
+  /** unique or primary key constraint on columns "campaign_id", "lead_id" */
+  | 'uq_campaign_leads';
+
+/** input type for inserting data into table "campaign_leads" */
+export type Campaign_Leads_Insert_Input = {
+  attempts_count?: number | null | undefined;
+  campaign?: Campaigns_Obj_Rel_Insert_Input | null | undefined;
+  campaign_id?: string | null | undefined;
+  created_at?: string | null | undefined;
+  id?: string | null | undefined;
+  lead?: Leads_Obj_Rel_Insert_Input | null | undefined;
+  lead_id?: string | null | undefined;
+  status?: string | null | undefined;
+  updated_at?: string | null | undefined;
+  variables?: any;
+};
+
+/** on_conflict condition type for table "campaign_leads" */
+export type Campaign_Leads_On_Conflict = {
+  constraint: Campaign_Leads_Constraint;
+  update_columns?: Array<Campaign_Leads_Update_Column>;
+  where?: Campaign_Leads_Bool_Exp | null | undefined;
+};
+
+/** select columns of table "campaign_leads" */
+export type Campaign_Leads_Select_Column =
+  /** column name */
+  | 'attempts_count'
+  /** column name */
+  | 'campaign_id'
+  /** column name */
+  | 'created_at'
+  /** column name */
+  | 'id'
+  /** column name */
+  | 'lead_id'
+  /** column name */
+  | 'status'
+  /** column name */
+  | 'updated_at'
+  /** column name */
+  | 'variables';
+
+/** update columns of table "campaign_leads" */
+export type Campaign_Leads_Update_Column =
+  /** column name */
+  | 'attempts_count'
+  /** column name */
+  | 'campaign_id'
+  /** column name */
+  | 'created_at'
+  /** column name */
+  | 'id'
+  /** column name */
+  | 'lead_id'
+  /** column name */
+  | 'status'
+  /** column name */
+  | 'updated_at'
+  /** column name */
+  | 'variables';
+
+/** Boolean expression to filter rows from the table "campaign_status_enum". All fields are combined with a logical 'AND'. */
+export type Campaign_Status_Enum_Bool_Exp = {
+  _and?: Array<Campaign_Status_Enum_Bool_Exp> | null | undefined;
+  _not?: Campaign_Status_Enum_Bool_Exp | null | undefined;
+  _or?: Array<Campaign_Status_Enum_Bool_Exp> | null | undefined;
+  id?: String_Comparison_Exp | null | undefined;
+  label?: String_Comparison_Exp | null | undefined;
+};
+
+/** unique or primary key constraints on table "campaign_status_enum" */
+export type Campaign_Status_Enum_Constraint =
+  /** unique or primary key constraint on columns "id" */
+  | 'campaign_status_enum_pkey';
+
+export type Campaign_Status_Enum_Enum =
+  /** Completed */
+  | 'completed'
+  /** Draft */
+  | 'draft'
+  /** Running */
+  | 'running'
+  /** Scheduled */
+  | 'scheduled'
+  /** Stopped */
+  | 'stopped';
+
+/** Boolean expression to compare columns of type "campaign_status_enum_enum". All fields are combined with logical 'AND'. */
+export type Campaign_Status_Enum_Enum_Comparison_Exp = {
+  _eq?: Campaign_Status_Enum_Enum | null | undefined;
+  _in?: Array<Campaign_Status_Enum_Enum> | null | undefined;
+  _is_null?: boolean | null | undefined;
+  _neq?: Campaign_Status_Enum_Enum | null | undefined;
+  _nin?: Array<Campaign_Status_Enum_Enum> | null | undefined;
+};
+
+/** input type for inserting data into table "campaign_status_enum" */
+export type Campaign_Status_Enum_Insert_Input = {
+  id?: string | null | undefined;
+  label?: string | null | undefined;
+};
+
+/** input type for inserting object relation for remote table "campaign_status_enum" */
+export type Campaign_Status_Enum_Obj_Rel_Insert_Input = {
+  data: Campaign_Status_Enum_Insert_Input;
+  /** upsert condition */
+  on_conflict?: Campaign_Status_Enum_On_Conflict | null | undefined;
+};
+
+/** on_conflict condition type for table "campaign_status_enum" */
+export type Campaign_Status_Enum_On_Conflict = {
+  constraint: Campaign_Status_Enum_Constraint;
+  update_columns?: Array<Campaign_Status_Enum_Update_Column>;
+  where?: Campaign_Status_Enum_Bool_Exp | null | undefined;
+};
+
+/** update columns of table "campaign_status_enum" */
+export type Campaign_Status_Enum_Update_Column =
+  /** column name */
+  | 'id'
+  /** column name */
+  | 'label';
+
+/** Boolean expression to filter rows from the table "campaigns". All fields are combined with a logical 'AND'. */
+export type Campaigns_Bool_Exp = {
+  _and?: Array<Campaigns_Bool_Exp> | null | undefined;
+  _not?: Campaigns_Bool_Exp | null | undefined;
+  _or?: Array<Campaigns_Bool_Exp> | null | undefined;
+  agent?: Agents_Bool_Exp | null | undefined;
+  agent_id?: Uuid_Comparison_Exp | null | undefined;
+  auto_retry_conditions?: Jsonb_Comparison_Exp | null | undefined;
+  auto_retry_enabled?: Boolean_Comparison_Exp | null | undefined;
+  auto_retry_gap_minutes?: Int_Comparison_Exp | null | undefined;
+  auto_retry_max_attempts?: Int_Comparison_Exp | null | undefined;
+  call_logs?: Call_Logs_Bool_Exp | null | undefined;
+  call_logs_aggregate?: Call_Logs_Aggregate_Bool_Exp | null | undefined;
+  calling_window_end?: String_Comparison_Exp | null | undefined;
+  calling_window_start?: String_Comparison_Exp | null | undefined;
+  calling_window_timezone?: String_Comparison_Exp | null | undefined;
+  campaign_leads?: Campaign_Leads_Bool_Exp | null | undefined;
+  campaign_leads_aggregate?: Campaign_Leads_Aggregate_Bool_Exp | null | undefined;
+  campaign_status_enum?: Campaign_Status_Enum_Bool_Exp | null | undefined;
+  completed_at?: Timestamptz_Comparison_Exp | null | undefined;
+  created_at?: Timestamptz_Comparison_Exp | null | undefined;
+  id?: Uuid_Comparison_Exp | null | undefined;
+  lead_source_type?: String_Comparison_Exp | null | undefined;
+  name?: String_Comparison_Exp | null | undefined;
+  organization?: Organizations_Bool_Exp | null | undefined;
+  organization_id?: Uuid_Comparison_Exp | null | undefined;
+  scheduled_at?: Timestamptz_Comparison_Exp | null | undefined;
+  started_at?: Timestamptz_Comparison_Exp | null | undefined;
+  status?: Campaign_Status_Enum_Enum_Comparison_Exp | null | undefined;
+  stopped_at?: Timestamptz_Comparison_Exp | null | undefined;
+  updated_at?: Timestamptz_Comparison_Exp | null | undefined;
+  zitadel_org_id?: String_Comparison_Exp | null | undefined;
+};
+
+/** unique or primary key constraints on table "campaigns" */
+export type Campaigns_Constraint =
+  /** unique or primary key constraint on columns "id" */
+  | 'campaigns_pkey'
+  /** unique or primary key constraint on columns "name", "organization_id" */
+  | 'uq_campaigns_org_name';
+
+/** input type for inserting data into table "campaigns" */
+export type Campaigns_Insert_Input = {
+  agent?: Agents_Obj_Rel_Insert_Input | null | undefined;
+  agent_id?: string | null | undefined;
+  auto_retry_conditions?: any;
+  auto_retry_enabled?: boolean | null | undefined;
+  auto_retry_gap_minutes?: number | null | undefined;
+  auto_retry_max_attempts?: number | null | undefined;
+  call_logs?: Call_Logs_Arr_Rel_Insert_Input | null | undefined;
+  calling_window_end?: string | null | undefined;
+  calling_window_start?: string | null | undefined;
+  calling_window_timezone?: string | null | undefined;
+  campaign_leads?: Campaign_Leads_Arr_Rel_Insert_Input | null | undefined;
+  campaign_status_enum?: Campaign_Status_Enum_Obj_Rel_Insert_Input | null | undefined;
+  completed_at?: string | null | undefined;
+  created_at?: string | null | undefined;
+  id?: string | null | undefined;
+  lead_source_type?: string | null | undefined;
+  name?: string | null | undefined;
+  organization?: Organizations_Obj_Rel_Insert_Input | null | undefined;
+  organization_id?: string | null | undefined;
+  scheduled_at?: string | null | undefined;
+  started_at?: string | null | undefined;
+  status?: Campaign_Status_Enum_Enum | null | undefined;
+  stopped_at?: string | null | undefined;
+  updated_at?: string | null | undefined;
+  zitadel_org_id?: string | null | undefined;
+};
+
+/** input type for inserting object relation for remote table "campaigns" */
+export type Campaigns_Obj_Rel_Insert_Input = {
+  data: Campaigns_Insert_Input;
+  /** upsert condition */
+  on_conflict?: Campaigns_On_Conflict | null | undefined;
+};
+
+/** on_conflict condition type for table "campaigns" */
+export type Campaigns_On_Conflict = {
+  constraint: Campaigns_Constraint;
+  update_columns?: Array<Campaigns_Update_Column>;
+  where?: Campaigns_Bool_Exp | null | undefined;
+};
+
+/** input type for updating data in table "campaigns" */
+export type Campaigns_Set_Input = {
+  agent_id?: string | null | undefined;
+  auto_retry_conditions?: any;
+  auto_retry_enabled?: boolean | null | undefined;
+  auto_retry_gap_minutes?: number | null | undefined;
+  auto_retry_max_attempts?: number | null | undefined;
+  calling_window_end?: string | null | undefined;
+  calling_window_start?: string | null | undefined;
+  calling_window_timezone?: string | null | undefined;
+  completed_at?: string | null | undefined;
+  created_at?: string | null | undefined;
+  id?: string | null | undefined;
+  lead_source_type?: string | null | undefined;
+  name?: string | null | undefined;
+  organization_id?: string | null | undefined;
+  scheduled_at?: string | null | undefined;
+  started_at?: string | null | undefined;
+  status?: Campaign_Status_Enum_Enum | null | undefined;
+  stopped_at?: string | null | undefined;
+  updated_at?: string | null | undefined;
+  zitadel_org_id?: string | null | undefined;
+};
+
+/** update columns of table "campaigns" */
+export type Campaigns_Update_Column =
+  /** column name */
+  | 'agent_id'
+  /** column name */
+  | 'auto_retry_conditions'
+  /** column name */
+  | 'auto_retry_enabled'
+  /** column name */
+  | 'auto_retry_gap_minutes'
+  /** column name */
+  | 'auto_retry_max_attempts'
+  /** column name */
+  | 'calling_window_end'
+  /** column name */
+  | 'calling_window_start'
+  /** column name */
+  | 'calling_window_timezone'
+  /** column name */
+  | 'completed_at'
+  /** column name */
+  | 'created_at'
+  /** column name */
+  | 'id'
+  /** column name */
+  | 'lead_source_type'
+  /** column name */
+  | 'name'
+  /** column name */
+  | 'organization_id'
+  /** column name */
+  | 'scheduled_at'
+  /** column name */
+  | 'started_at'
+  /** column name */
+  | 'status'
+  /** column name */
+  | 'stopped_at'
+  /** column name */
+  | 'updated_at'
+  /** column name */
+  | 'zitadel_org_id';
 
 /** Boolean expression to filter rows from the table "disposition_enum". All fields are combined with a logical 'AND'. */
 export type Disposition_Enum_Bool_Exp = {
@@ -1001,6 +1344,38 @@ export type Uuid_Comparison_Exp = {
   _nin?: Array<string> | null | undefined;
 };
 
+export type AddCampaignLeadsMutationVariables = Exact<{
+  objects: Array<Campaign_Leads_Insert_Input> | Campaign_Leads_Insert_Input;
+}>;
+
+
+export type AddCampaignLeadsMutation = { insert_campaign_leads: { affected_rows: number } | null };
+
+export type CreateCampaignMutationVariables = Exact<{
+  name: string;
+  agentId: string;
+  leadSourceType: string;
+  leads?: Array<CampaignLeadInput> | CampaignLeadInput | null | undefined;
+  leadIds?: Array<string> | string | null | undefined;
+  autoRetryEnabled?: boolean | null | undefined;
+  autoRetryConditions?: Array<string> | string | null | undefined;
+  autoRetryMaxAttempts?: number | null | undefined;
+  autoRetryGapMinutes?: number | null | undefined;
+  callingWindowStart?: string | null | undefined;
+  callingWindowEnd?: string | null | undefined;
+  callingWindowTimezone?: string | null | undefined;
+}>;
+
+
+export type CreateCampaignMutation = { createCampaign: { success: boolean, campaignId: string | null, message: string | null } | null };
+
+export type DeleteCampaignMutationVariables = Exact<{
+  id: string;
+}>;
+
+
+export type DeleteCampaignMutation = { delete_campaigns_by_pk: { id: string } | null };
+
 export type DeleteLeadMutationVariables = Exact<{
   id: string;
 }>;
@@ -1030,6 +1405,29 @@ export type PlaceSingleCallMutationVariables = Exact<{
 
 
 export type PlaceSingleCallMutation = { placeSingleCall: { success: boolean, executionId: string | null, message: string | null } | null };
+
+export type RunCampaignMutationVariables = Exact<{
+  campaignId: string;
+  scheduledAt?: string | null | undefined;
+}>;
+
+
+export type RunCampaignMutation = { runCampaign: { success: boolean, status: string, totalPlaced: number | null, message: string | null } | null };
+
+export type StopCampaignMutationVariables = Exact<{
+  campaignId: string;
+}>;
+
+
+export type StopCampaignMutation = { stopCampaign: { success: boolean, message: string | null } | null };
+
+export type UpdateCampaignMutationVariables = Exact<{
+  campaignId: string;
+  changes: Campaigns_Set_Input;
+}>;
+
+
+export type UpdateCampaignMutation = { update_campaigns_by_pk: { id: string, name: string, agent_id: string, auto_retry_enabled: boolean, auto_retry_conditions: any, auto_retry_max_attempts: number, auto_retry_gap_minutes: number, calling_window_start: string | null, calling_window_end: string | null, calling_window_timezone: string | null, updated_at: string } | null };
 
 export type UpdateLeadMutationVariables = Exact<{
   id: string;
@@ -1064,6 +1462,18 @@ export type GetCallLogsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetCallLogsQuery = { call_logs: Array<{ id: string, organization_id: string, zitadel_org_id: string, agent_id: string | null, bolna_agent_id: string, bolna_execution_id: string, recipient_phone_number: string, agent_phone_number: string | null, call_type: string | null, telephony_provider: string | null, status: Call_Status_Enum_Enum, hangup_by: string | null, hangup_reason: string | null, duration_seconds: number | null, recording_url: string | null, total_cost: unknown, disposition: Disposition_Enum_Enum | null, summary: string | null, transcript: string | null, extracted_data: any, latency_data: any, raw_response: any, initiated_at: string | null, created_at: string | null, updated_at: string | null, call_status_enum: { id: string, label: string }, disposition_enum: { id: string, label: string } | null, lead: { id: string, name: string | null, phone_number: string } | null, agent: { id: string, name: string, language_id: Agent_Language_Enum_Enum | null } | null }> };
 
+export type GetCampaignByIdQueryVariables = Exact<{
+  id: string;
+}>;
+
+
+export type GetCampaignByIdQuery = { campaigns_by_pk: { id: string, name: string, status: Campaign_Status_Enum_Enum, lead_source_type: string, auto_retry_enabled: boolean, auto_retry_conditions: any, auto_retry_max_attempts: number, auto_retry_gap_minutes: number, calling_window_start: string | null, calling_window_end: string | null, calling_window_timezone: string | null, scheduled_at: string | null, started_at: string | null, completed_at: string | null, stopped_at: string | null, created_at: string, updated_at: string, agent: { id: string, name: string, language_id: Agent_Language_Enum_Enum | null }, campaign_leads: Array<{ id: string, lead_id: string, variables: any, status: string, attempts_count: number, lead: { id: string, name: string | null, phone_number: string, email: string | null, company_name: string | null } }>, call_logs: Array<{ id: string, organization_id: string, zitadel_org_id: string, agent_id: string | null, lead_id: string | null, campaign_id: string | null, bolna_agent_id: string, bolna_execution_id: string, recipient_phone_number: string, agent_phone_number: string | null, call_type: string | null, telephony_provider: string | null, status: Call_Status_Enum_Enum, hangup_by: string | null, hangup_reason: string | null, duration_seconds: number | null, recording_url: string | null, total_cost: unknown, disposition: Disposition_Enum_Enum | null, summary: string | null, transcript: string | null, extracted_data: any, latency_data: any, raw_response: any, initiated_at: string | null, created_at: string | null, updated_at: string | null, call_status_enum: { id: string, label: string }, disposition_enum: { id: string, label: string } | null, agent: { id: string, name: string, language_id: Agent_Language_Enum_Enum | null } | null, lead: { id: string, name: string | null, phone_number: string } | null }> } | null };
+
+export type GetCampaignsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetCampaignsQuery = { campaigns: Array<{ id: string, name: string, status: Campaign_Status_Enum_Enum, lead_source_type: string, auto_retry_enabled: boolean, auto_retry_conditions: any, auto_retry_max_attempts: number, auto_retry_gap_minutes: number, calling_window_start: string | null, calling_window_end: string | null, calling_window_timezone: string | null, scheduled_at: string | null, started_at: string | null, completed_at: string | null, stopped_at: string | null, created_at: string, updated_at: string, agent: { id: string, name: string, language_id: Agent_Language_Enum_Enum | null }, campaign_leads_aggregate: { aggregate: { count: number } | null }, call_logs_aggregate: { aggregate: { count: number } | null } }> };
+
 export type GetLeadByIdQueryVariables = Exact<{
   id: string;
 }>;
@@ -1090,15 +1500,23 @@ export type GetOrganizationWithUserQueryVariables = Exact<{
 export type GetOrganizationWithUserQuery = { organizations: Array<{ id: string, zitadel_org_id: string, name: string, created_at: string | null, updated_at: string | null, users: Array<{ id: string, zitadel_user_id: string, email: string, organization_id: string }> }> };
 
 
+export const AddCampaignLeadsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"AddCampaignLeads"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"objects"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"campaign_leads_insert_input"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insert_campaign_leads"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"objects"},"value":{"kind":"Variable","name":{"kind":"Name","value":"objects"}}},{"kind":"Argument","name":{"kind":"Name","value":"on_conflict"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"constraint"},"value":{"kind":"EnumValue","value":"uq_campaign_leads"}},{"kind":"ObjectField","name":{"kind":"Name","value":"update_columns"},"value":{"kind":"ListValue","values":[]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"affected_rows"}}]}}]}}]} as unknown as DocumentNode<AddCampaignLeadsMutation, AddCampaignLeadsMutationVariables>;
+export const CreateCampaignDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createCampaign"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"agentId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"leadSourceType"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"leads"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CampaignLeadInput"}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"leadIds"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"autoRetryEnabled"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"autoRetryConditions"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"autoRetryMaxAttempts"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"autoRetryGapMinutes"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"callingWindowStart"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"callingWindowEnd"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"callingWindowTimezone"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createCampaign"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}},{"kind":"Argument","name":{"kind":"Name","value":"agentId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"agentId"}}},{"kind":"Argument","name":{"kind":"Name","value":"leadSourceType"},"value":{"kind":"Variable","name":{"kind":"Name","value":"leadSourceType"}}},{"kind":"Argument","name":{"kind":"Name","value":"leads"},"value":{"kind":"Variable","name":{"kind":"Name","value":"leads"}}},{"kind":"Argument","name":{"kind":"Name","value":"leadIds"},"value":{"kind":"Variable","name":{"kind":"Name","value":"leadIds"}}},{"kind":"Argument","name":{"kind":"Name","value":"autoRetryEnabled"},"value":{"kind":"Variable","name":{"kind":"Name","value":"autoRetryEnabled"}}},{"kind":"Argument","name":{"kind":"Name","value":"autoRetryConditions"},"value":{"kind":"Variable","name":{"kind":"Name","value":"autoRetryConditions"}}},{"kind":"Argument","name":{"kind":"Name","value":"autoRetryMaxAttempts"},"value":{"kind":"Variable","name":{"kind":"Name","value":"autoRetryMaxAttempts"}}},{"kind":"Argument","name":{"kind":"Name","value":"autoRetryGapMinutes"},"value":{"kind":"Variable","name":{"kind":"Name","value":"autoRetryGapMinutes"}}},{"kind":"Argument","name":{"kind":"Name","value":"callingWindowStart"},"value":{"kind":"Variable","name":{"kind":"Name","value":"callingWindowStart"}}},{"kind":"Argument","name":{"kind":"Name","value":"callingWindowEnd"},"value":{"kind":"Variable","name":{"kind":"Name","value":"callingWindowEnd"}}},{"kind":"Argument","name":{"kind":"Name","value":"callingWindowTimezone"},"value":{"kind":"Variable","name":{"kind":"Name","value":"callingWindowTimezone"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"campaignId"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]} as unknown as DocumentNode<CreateCampaignMutation, CreateCampaignMutationVariables>;
+export const DeleteCampaignDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"deleteCampaign"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"uuid"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"delete_campaigns_by_pk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<DeleteCampaignMutation, DeleteCampaignMutationVariables>;
 export const DeleteLeadDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteLead"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"uuid"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"delete_leads_by_pk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<DeleteLeadMutation, DeleteLeadMutationVariables>;
 export const InsertLeadDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"InsertLead"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"object"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"leads_insert_input"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insert_leads_one"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"object"},"value":{"kind":"Variable","name":{"kind":"Name","value":"object"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"phone_number"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"company_name"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}}]}}]}}]} as unknown as DocumentNode<InsertLeadMutation, InsertLeadMutationVariables>;
 export const PlaceBulkCallDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"placeBulkCall"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"agentId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"leads"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"BulkLeadInput"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"placeBulkCall"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"agentId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"agentId"}}},{"kind":"Argument","name":{"kind":"Name","value":"leads"},"value":{"kind":"Variable","name":{"kind":"Name","value":"leads"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"totalRequested"}},{"kind":"Field","name":{"kind":"Name","value":"totalPlaced"}},{"kind":"Field","name":{"kind":"Name","value":"totalSkipped"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]} as unknown as DocumentNode<PlaceBulkCallMutation, PlaceBulkCallMutationVariables>;
 export const PlaceSingleCallDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"placeSingleCall"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"agentId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"leadId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"placeSingleCall"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"agentId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"agentId"}}},{"kind":"Argument","name":{"kind":"Name","value":"leadId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"leadId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"executionId"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]} as unknown as DocumentNode<PlaceSingleCallMutation, PlaceSingleCallMutationVariables>;
+export const RunCampaignDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"runCampaign"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"campaignId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"scheduledAt"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"runCampaign"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"campaignId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"campaignId"}}},{"kind":"Argument","name":{"kind":"Name","value":"scheduledAt"},"value":{"kind":"Variable","name":{"kind":"Name","value":"scheduledAt"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"totalPlaced"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]} as unknown as DocumentNode<RunCampaignMutation, RunCampaignMutationVariables>;
+export const StopCampaignDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"stopCampaign"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"campaignId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"stopCampaign"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"campaignId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"campaignId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]} as unknown as DocumentNode<StopCampaignMutation, StopCampaignMutationVariables>;
+export const UpdateCampaignDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateCampaign"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"campaignId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"uuid"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"changes"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"campaigns_set_input"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"update_campaigns_by_pk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pk_columns"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"campaignId"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"Variable","name":{"kind":"Name","value":"changes"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"agent_id"}},{"kind":"Field","name":{"kind":"Name","value":"auto_retry_enabled"}},{"kind":"Field","name":{"kind":"Name","value":"auto_retry_conditions"}},{"kind":"Field","name":{"kind":"Name","value":"auto_retry_max_attempts"}},{"kind":"Field","name":{"kind":"Name","value":"auto_retry_gap_minutes"}},{"kind":"Field","name":{"kind":"Name","value":"calling_window_start"}},{"kind":"Field","name":{"kind":"Name","value":"calling_window_end"}},{"kind":"Field","name":{"kind":"Name","value":"calling_window_timezone"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]}}]} as unknown as DocumentNode<UpdateCampaignMutation, UpdateCampaignMutationVariables>;
 export const UpdateLeadDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateLead"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"uuid"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"changes"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"leads_set_input"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"update_leads_by_pk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pk_columns"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"Variable","name":{"kind":"Name","value":"changes"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"phone_number"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"company_name"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]}}]} as unknown as DocumentNode<UpdateLeadMutation, UpdateLeadMutationVariables>;
 export const FileUploadS3UrlDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"fileUploadS3Url"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"fileName"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"contentType"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"fileUploadS3Url"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"fileName"},"value":{"kind":"Variable","name":{"kind":"Name","value":"fileName"}}},{"kind":"Argument","name":{"kind":"Name","value":"contentType"},"value":{"kind":"Variable","name":{"kind":"Name","value":"contentType"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"policy"}},{"kind":"Field","name":{"kind":"Name","value":"algorithm"}},{"kind":"Field","name":{"kind":"Name","value":"credential"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"signature"}},{"kind":"Field","name":{"kind":"Name","value":"contentType"}},{"kind":"Field","name":{"kind":"Name","value":"contentDisposition"}}]}}]}}]} as unknown as DocumentNode<FileUploadS3UrlQuery, FileUploadS3UrlQueryVariables>;
 export const GetAgentsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetAgents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"agents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"bolna_agent_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"language_id"}},{"kind":"Field","name":{"kind":"Name","value":"zitadel_org_id"}}]}}]}}]} as unknown as DocumentNode<GetAgentsQuery, GetAgentsQueryVariables>;
 export const GetCallLogByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetCallLogById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"uuid"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"call_logs_by_pk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"organization_id"}},{"kind":"Field","name":{"kind":"Name","value":"zitadel_org_id"}},{"kind":"Field","name":{"kind":"Name","value":"agent_id"}},{"kind":"Field","name":{"kind":"Name","value":"bolna_agent_id"}},{"kind":"Field","name":{"kind":"Name","value":"bolna_execution_id"}},{"kind":"Field","name":{"kind":"Name","value":"recipient_phone_number"}},{"kind":"Field","name":{"kind":"Name","value":"agent_phone_number"}},{"kind":"Field","name":{"kind":"Name","value":"call_type"}},{"kind":"Field","name":{"kind":"Name","value":"telephony_provider"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"call_status_enum"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"hangup_by"}},{"kind":"Field","name":{"kind":"Name","value":"hangup_reason"}},{"kind":"Field","name":{"kind":"Name","value":"duration_seconds"}},{"kind":"Field","name":{"kind":"Name","value":"recording_url"}},{"kind":"Field","name":{"kind":"Name","value":"total_cost"}},{"kind":"Field","name":{"kind":"Name","value":"disposition"}},{"kind":"Field","name":{"kind":"Name","value":"disposition_enum"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"transcript"}},{"kind":"Field","name":{"kind":"Name","value":"extracted_data"}},{"kind":"Field","name":{"kind":"Name","value":"latency_data"}},{"kind":"Field","name":{"kind":"Name","value":"raw_response"}},{"kind":"Field","name":{"kind":"Name","value":"initiated_at"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}},{"kind":"Field","name":{"kind":"Name","value":"lead"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phone_number"}}]}},{"kind":"Field","name":{"kind":"Name","value":"agent"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"language_id"}}]}}]}}]}}]} as unknown as DocumentNode<GetCallLogByIdQuery, GetCallLogByIdQueryVariables>;
 export const GetCallLogsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetCallLogs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"call_logs"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"order_by"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"created_at"},"value":{"kind":"EnumValue","value":"desc"}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"organization_id"}},{"kind":"Field","name":{"kind":"Name","value":"zitadel_org_id"}},{"kind":"Field","name":{"kind":"Name","value":"agent_id"}},{"kind":"Field","name":{"kind":"Name","value":"bolna_agent_id"}},{"kind":"Field","name":{"kind":"Name","value":"bolna_execution_id"}},{"kind":"Field","name":{"kind":"Name","value":"recipient_phone_number"}},{"kind":"Field","name":{"kind":"Name","value":"agent_phone_number"}},{"kind":"Field","name":{"kind":"Name","value":"call_type"}},{"kind":"Field","name":{"kind":"Name","value":"telephony_provider"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"call_status_enum"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"hangup_by"}},{"kind":"Field","name":{"kind":"Name","value":"hangup_reason"}},{"kind":"Field","name":{"kind":"Name","value":"duration_seconds"}},{"kind":"Field","name":{"kind":"Name","value":"recording_url"}},{"kind":"Field","name":{"kind":"Name","value":"total_cost"}},{"kind":"Field","name":{"kind":"Name","value":"disposition"}},{"kind":"Field","name":{"kind":"Name","value":"disposition_enum"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"transcript"}},{"kind":"Field","name":{"kind":"Name","value":"extracted_data"}},{"kind":"Field","name":{"kind":"Name","value":"latency_data"}},{"kind":"Field","name":{"kind":"Name","value":"raw_response"}},{"kind":"Field","name":{"kind":"Name","value":"initiated_at"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}},{"kind":"Field","name":{"kind":"Name","value":"lead"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phone_number"}}]}},{"kind":"Field","name":{"kind":"Name","value":"agent"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"language_id"}}]}}]}}]}}]} as unknown as DocumentNode<GetCallLogsQuery, GetCallLogsQueryVariables>;
+export const GetCampaignByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getCampaignById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"uuid"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"campaigns_by_pk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"lead_source_type"}},{"kind":"Field","name":{"kind":"Name","value":"auto_retry_enabled"}},{"kind":"Field","name":{"kind":"Name","value":"auto_retry_conditions"}},{"kind":"Field","name":{"kind":"Name","value":"auto_retry_max_attempts"}},{"kind":"Field","name":{"kind":"Name","value":"auto_retry_gap_minutes"}},{"kind":"Field","name":{"kind":"Name","value":"calling_window_start"}},{"kind":"Field","name":{"kind":"Name","value":"calling_window_end"}},{"kind":"Field","name":{"kind":"Name","value":"calling_window_timezone"}},{"kind":"Field","name":{"kind":"Name","value":"scheduled_at"}},{"kind":"Field","name":{"kind":"Name","value":"started_at"}},{"kind":"Field","name":{"kind":"Name","value":"completed_at"}},{"kind":"Field","name":{"kind":"Name","value":"stopped_at"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}},{"kind":"Field","name":{"kind":"Name","value":"agent"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"language_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"campaign_leads"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"lead_id"}},{"kind":"Field","name":{"kind":"Name","value":"variables"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"attempts_count"}},{"kind":"Field","name":{"kind":"Name","value":"lead"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phone_number"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"company_name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"call_logs"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"order_by"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"created_at"},"value":{"kind":"EnumValue","value":"desc"}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"organization_id"}},{"kind":"Field","name":{"kind":"Name","value":"zitadel_org_id"}},{"kind":"Field","name":{"kind":"Name","value":"agent_id"}},{"kind":"Field","name":{"kind":"Name","value":"lead_id"}},{"kind":"Field","name":{"kind":"Name","value":"campaign_id"}},{"kind":"Field","name":{"kind":"Name","value":"bolna_agent_id"}},{"kind":"Field","name":{"kind":"Name","value":"bolna_execution_id"}},{"kind":"Field","name":{"kind":"Name","value":"recipient_phone_number"}},{"kind":"Field","name":{"kind":"Name","value":"agent_phone_number"}},{"kind":"Field","name":{"kind":"Name","value":"call_type"}},{"kind":"Field","name":{"kind":"Name","value":"telephony_provider"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"hangup_by"}},{"kind":"Field","name":{"kind":"Name","value":"hangup_reason"}},{"kind":"Field","name":{"kind":"Name","value":"duration_seconds"}},{"kind":"Field","name":{"kind":"Name","value":"recording_url"}},{"kind":"Field","name":{"kind":"Name","value":"total_cost"}},{"kind":"Field","name":{"kind":"Name","value":"disposition"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"transcript"}},{"kind":"Field","name":{"kind":"Name","value":"extracted_data"}},{"kind":"Field","name":{"kind":"Name","value":"latency_data"}},{"kind":"Field","name":{"kind":"Name","value":"raw_response"}},{"kind":"Field","name":{"kind":"Name","value":"initiated_at"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}},{"kind":"Field","name":{"kind":"Name","value":"call_status_enum"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"disposition_enum"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"agent"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"language_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"lead"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phone_number"}}]}}]}}]}}]}}]} as unknown as DocumentNode<GetCampaignByIdQuery, GetCampaignByIdQueryVariables>;
+export const GetCampaignsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getCampaigns"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"campaigns"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"order_by"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"created_at"},"value":{"kind":"EnumValue","value":"desc"}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"lead_source_type"}},{"kind":"Field","name":{"kind":"Name","value":"auto_retry_enabled"}},{"kind":"Field","name":{"kind":"Name","value":"auto_retry_conditions"}},{"kind":"Field","name":{"kind":"Name","value":"auto_retry_max_attempts"}},{"kind":"Field","name":{"kind":"Name","value":"auto_retry_gap_minutes"}},{"kind":"Field","name":{"kind":"Name","value":"calling_window_start"}},{"kind":"Field","name":{"kind":"Name","value":"calling_window_end"}},{"kind":"Field","name":{"kind":"Name","value":"calling_window_timezone"}},{"kind":"Field","name":{"kind":"Name","value":"scheduled_at"}},{"kind":"Field","name":{"kind":"Name","value":"started_at"}},{"kind":"Field","name":{"kind":"Name","value":"completed_at"}},{"kind":"Field","name":{"kind":"Name","value":"stopped_at"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}},{"kind":"Field","name":{"kind":"Name","value":"agent"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"language_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"campaign_leads_aggregate"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"aggregate"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"count"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"call_logs_aggregate"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"aggregate"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"count"}}]}}]}}]}}]}}]} as unknown as DocumentNode<GetCampaignsQuery, GetCampaignsQueryVariables>;
 export const GetLeadByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetLeadById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"uuid"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"leads_by_pk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"organization_id"}},{"kind":"Field","name":{"kind":"Name","value":"zitadel_org_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phone_number"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"company_name"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"lead_status_enum"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"total_calls_count"}},{"kind":"Field","name":{"kind":"Name","value":"last_call_at"}},{"kind":"Field","name":{"kind":"Name","value":"last_disposition_id"}},{"kind":"Field","name":{"kind":"Name","value":"disposition_enum"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}},{"kind":"Field","name":{"kind":"Name","value":"call_logs"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"order_by"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"created_at"},"value":{"kind":"EnumValue","value":"desc"}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"organization_id"}},{"kind":"Field","name":{"kind":"Name","value":"zitadel_org_id"}},{"kind":"Field","name":{"kind":"Name","value":"agent_id"}},{"kind":"Field","name":{"kind":"Name","value":"bolna_agent_id"}},{"kind":"Field","name":{"kind":"Name","value":"bolna_execution_id"}},{"kind":"Field","name":{"kind":"Name","value":"recipient_phone_number"}},{"kind":"Field","name":{"kind":"Name","value":"agent_phone_number"}},{"kind":"Field","name":{"kind":"Name","value":"call_type"}},{"kind":"Field","name":{"kind":"Name","value":"telephony_provider"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"call_status_enum"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"hangup_by"}},{"kind":"Field","name":{"kind":"Name","value":"hangup_reason"}},{"kind":"Field","name":{"kind":"Name","value":"duration_seconds"}},{"kind":"Field","name":{"kind":"Name","value":"recording_url"}},{"kind":"Field","name":{"kind":"Name","value":"total_cost"}},{"kind":"Field","name":{"kind":"Name","value":"disposition"}},{"kind":"Field","name":{"kind":"Name","value":"disposition_enum"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"transcript"}},{"kind":"Field","name":{"kind":"Name","value":"extracted_data"}},{"kind":"Field","name":{"kind":"Name","value":"latency_data"}},{"kind":"Field","name":{"kind":"Name","value":"raw_response"}},{"kind":"Field","name":{"kind":"Name","value":"initiated_at"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}},{"kind":"Field","name":{"kind":"Name","value":"agent"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"language_id"}}]}}]}}]}}]}}]} as unknown as DocumentNode<GetLeadByIdQuery, GetLeadByIdQueryVariables>;
 export const GetLeadStatusesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetLeadStatuses"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"lead_status_enum"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"order_by"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"EnumValue","value":"asc"}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}}]} as unknown as DocumentNode<GetLeadStatusesQuery, GetLeadStatusesQueryVariables>;
 export const GetLeadsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetLeads"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"leads"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"order_by"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"created_at"},"value":{"kind":"EnumValue","value":"desc"}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"organization_id"}},{"kind":"Field","name":{"kind":"Name","value":"zitadel_org_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phone_number"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"company_name"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"lead_status_enum"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"total_calls_count"}},{"kind":"Field","name":{"kind":"Name","value":"last_call_at"}},{"kind":"Field","name":{"kind":"Name","value":"last_disposition_id"}},{"kind":"Field","name":{"kind":"Name","value":"disposition_enum"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]}}]} as unknown as DocumentNode<GetLeadsQuery, GetLeadsQueryVariables>;
