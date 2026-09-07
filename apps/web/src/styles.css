@@ -480,6 +480,63 @@
   background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
+/* Ant Design Table Filter Dropdown & Trigger Dark Theme Overrides */
+.ant-table-filter-trigger {
+  color: var(--muted-foreground, #9099a8) !important;
+  transition: all 0.2s ease !important;
+}
+
+.ant-table-filter-trigger:hover,
+.ant-table-filter-trigger.active {
+  color: var(--primary, #00c391) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-radius: 4px !important;
+}
+
+.ant-table-filter-dropdown {
+  background-color: var(--card, #101624) !important;
+  border: 1px solid var(--sidebar-border, #242b3a) !important;
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.85) !important;
+  border-radius: 0.875rem !important;
+  color: var(--foreground, #f2f5f9) !important;
+  padding: 4px !important;
+}
+
+.ant-table-filter-dropdown .ant-dropdown-menu {
+  background-color: transparent !important;
+}
+
+.ant-table-filter-dropdown .ant-dropdown-menu-item,
+.ant-table-filter-dropdown .ant-checkbox-wrapper,
+.ant-table-filter-dropdown .ant-checkbox-wrapper + span,
+.ant-table-filter-dropdown .ant-dropdown-menu-item-title {
+  color: var(--foreground, #f2f5f9) !important;
+  font-size: 0.8125rem !important;
+}
+
+.ant-table-filter-dropdown .ant-dropdown-menu-item:hover,
+.ant-table-filter-dropdown .ant-dropdown-menu-item-active {
+  background-color: var(--secondary, #1d2433) !important;
+  border-radius: 0.5rem !important;
+}
+
+.ant-table-filter-dropdown-btns {
+  border-top: 1px solid var(--sidebar-border, #242b3a) !important;
+  padding: 8px 12px !important;
+}
+
+.ant-table-filter-dropdown-btns .ant-btn-link,
+.ant-table-filter-dropdown-btns .ant-btn-link:hover {
+  color: var(--muted-foreground, #9099a8) !important;
+}
+
+.ant-table-filter-dropdown-btns .ant-btn-primary {
+  background-color: var(--primary, #00c391) !important;
+  color: var(--primary-foreground, #02140d) !important;
+  border-color: var(--primary, #00c391) !important;
+  font-weight: 600 !important;
+}
+
 
 
 
