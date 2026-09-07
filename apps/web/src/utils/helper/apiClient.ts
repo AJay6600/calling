@@ -1,6 +1,6 @@
 import axios from 'axios';
 import type { ApiErrorResponseType } from '../types';
-import { ZITADEL_ORG_ID_HEADER } from './zitadelClaims';
+import { ZITADEL_ORG_ID_HEADER, USER_ROLE_HEADER } from './zitadelClaims';
 
 const apiBaseUrl = import.meta.env['VITE_API_BASE_URL'];
 
@@ -35,6 +35,7 @@ const attachRequestInterceptor = () => {
   interceptorId = apiClient.interceptors.request.use((config) => {
     const accessToken = getAccessToken();
     const zitadelOrgId = getZitadelOrgId();
+    const userRole = localStorage.getItem('user_role_override') || 'org_admin';
 
     if (accessToken !== undefined && accessToken !== '') {
       config.headers.Authorization = `Bearer ${accessToken}`;
@@ -45,6 +46,8 @@ const attachRequestInterceptor = () => {
       config.headers['x-hasura-org-id'] = zitadelOrgId;
       config.headers['x-hasura-zitadel-org-id'] = zitadelOrgId;
     }
+
+    config.headers[USER_ROLE_HEADER] = userRole;
 
     return config;
   });

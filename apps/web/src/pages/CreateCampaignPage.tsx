@@ -1,7 +1,8 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client/react';
 import { Button, Card, Typography, message } from 'antd';
-import { FiArrowLeft, FiRadio } from 'react-icons/fi';
+import { FiArrowLeft, FiRadio, FiAlertTriangle, FiCreditCard } from 'react-icons/fi';
 import {
   getAgentsDocument,
   getLeadsDocument,
@@ -18,12 +19,34 @@ import {
   ParsedCsvLead,
   LeadRecordType,
   getLanguageLabel,
+  apiClient,
 } from '../utils';
 
 const { Title, Text } = Typography;
 
 export const CreateCampaignPage = () => {
   const navigate = useNavigate();
+  const [activeSub, setActiveSub] = useState<{
+    remaining_seconds: number;
+    status: string;
+    end_date: string;
+  } | null>(null);
+
+  useEffect(() => {
+    apiClient
+      .get('/api/subscriptions/active')
+      .then((res) => {
+        if (res.data?.subscription) {
+          setActiveSub(res.data.subscription);
+        }
+      })
+      .catch((err) => console.error('Error fetching subscription in CreateCampaignPage:', err));
+  }, []);
+
+  const isSubPaused =
+    activeSub?.status === 'expired' ||
+    activeSub?.status === 'exhausted' ||
+    (activeSub?.remaining_seconds ?? 1) <= 0;
 
   const { data: agentsData, loading: agentsLoading, error: agentsError } =
     useQuery(getAgentsDocument);
@@ -110,6 +133,27 @@ export const CreateCampaignPage = () => {
         className="bg-card! border! border-sidebar-border! rounded-3xl! shadow-xl w-full"
         bodyStyle={{ padding: 24 }}
       >
+        {isSubPaused && (
+          <div className="mb-4 p-3.5 rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-between text-xs">
+            <div className="flex items-center gap-2.5 text-rose-300">
+              <FiAlertTriangle className="text-rose-400 text-lg shrink-0" />
+              <div>
+                <strong className="block text-rose-200">Subscription Expired or Balance 0s</strong>
+                <span>You can create draft campaigns, but active subscription is required to run them.</span>
+              </div>
+            </div>
+            <Button
+              type="primary"
+              size="small"
+              icon={<FiCreditCard />}
+              onClick={() => navigate('/billing')}
+              className="bg-rose-500! text-white! border-rose-500! text-xs font-bold"
+            >
+              Upgrade Plan
+            </Button>
+          </div>
+        )}
+
         <div className="flex items-center gap-3 mb-6 border-b border-sidebar-border pb-4">
           <Button
             type="text"

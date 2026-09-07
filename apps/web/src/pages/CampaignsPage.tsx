@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client/react';
 import {
@@ -20,6 +20,8 @@ import {
   FiEye,
   FiRadio,
   FiRefreshCw,
+  FiAlertTriangle,
+  FiCreditCard,
 } from 'react-icons/fi';
 import {
   getCampaignsDocument,
@@ -30,6 +32,8 @@ import {
 import QueryLoading from '../component/query-loading/QueryLoading';
 import QueryError from '../component/query-error/QueryError';
 import RunCampaignModal from '../component/RunCampaignModal';
+import { SubscriptionRequiredModal } from '../component';
+import { apiClient } from '../utils';
 
 const { Title, Text } = Typography;
 
@@ -80,6 +84,29 @@ const getStatusTag = (status: string) => {
 export const CampaignsPage = () => {
   const navigate = useNavigate();
   const [selectedCampaignForRun, setSelectedCampaignForRun] = useState<CampaignRecordType | null>(null);
+  const [subModalOpen, setSubModalOpen] = useState(false);
+  const [subErrorMessage, setSubErrorMessage] = useState('');
+  const [activeSub, setActiveSub] = useState<{
+    remaining_seconds: number;
+    status: string;
+    end_date: string;
+  } | null>(null);
+
+  useEffect(() => {
+    apiClient
+      .get('/api/subscriptions/active')
+      .then((res) => {
+        if (res.data?.subscription) {
+          setActiveSub(res.data.subscription);
+        }
+      })
+      .catch((err) => console.error('Error fetching subscription in CampaignsPage:', err));
+  }, []);
+
+  const isSubPaused =
+    activeSub?.status === 'expired' ||
+    activeSub?.status === 'exhausted' ||
+    (activeSub?.remaining_seconds ?? 1) <= 0;
 
   const { data, loading, error, refetch } = useQuery(getCampaignsDocument, {
     pollInterval: 5000,
@@ -105,6 +132,13 @@ export const CampaignsPage = () => {
     (data?.campaigns as CampaignRecordType[]) || [];
 
   const handleOpenRunModal = (campaign: CampaignRecordType) => {
+    if (isSubPaused) {
+      setSubErrorMessage(
+        `Your subscription is ${activeSub?.status || 'exhausted'} with 0 remaining call seconds. Please upgrade to run campaigns.`,
+      );
+      setSubModalOpen(true);
+      return;
+    }
     setSelectedCampaignForRun(campaign);
   };
 
@@ -114,6 +148,14 @@ export const CampaignsPage = () => {
 
   const handleExecuteRun = async (scheduledAt?: string) => {
     if (!selectedCampaignForRun) return;
+
+    if (isSubPaused) {
+      setSubErrorMessage(
+        `Your subscription is ${activeSub?.status || 'exhausted'} with 0 remaining call seconds. Please upgrade to run campaigns.`,
+      );
+      setSubModalOpen(true);
+      return;
+    }
 
     try {
       const response = await runCampaign({
@@ -129,10 +171,30 @@ export const CampaignsPage = () => {
         handleCloseRunModal();
         navigate(`/campaigns/${selectedCampaignForRun.id}`);
       } else {
-        message.error(res?.message || 'Failed to run campaign');
+        const errorMsg = res?.message || 'Failed to run campaign';
+        if (
+          errorMsg.toLowerCase().includes('subscription') ||
+          errorMsg.toLowerCase().includes('expired') ||
+          errorMsg.toLowerCase().includes('second')
+        ) {
+          setSubErrorMessage(errorMsg);
+          setSubModalOpen(true);
+        } else {
+          message.error(errorMsg);
+        }
       }
-    } catch (err: unknown) {
-      message.error(err instanceof Error ? err.message : 'Error executing run');
+    } catch (err: any) {
+      const errorMsg = err?.message || 'Error executing run';
+      if (
+        errorMsg.toLowerCase().includes('subscription') ||
+        errorMsg.toLowerCase().includes('expired') ||
+        errorMsg.toLowerCase().includes('second')
+      ) {
+        setSubErrorMessage(errorMsg);
+        setSubModalOpen(true);
+      } else {
+        message.error(errorMsg);
+      }
     }
   };
 
@@ -299,6 +361,28 @@ export const CampaignsPage = () => {
 
   return (
     <div className="flex flex-col gap-4 w-full p-2 sm:p-4">
+      {/* Subscription Warning Banner */}
+      {isSubPaused && (
+        <div className="p-3.5 rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-between text-xs">
+          <div className="flex items-center gap-2.5 text-rose-300">
+            <FiAlertTriangle className="text-rose-400 text-lg shrink-0" />
+            <div>
+              <strong className="block text-rose-200">Subscription Expired or Balance 0s</strong>
+              <span>Upgrade subscription to run campaigns or dispatch calls.</span>
+            </div>
+          </div>
+          <Button
+            type="primary"
+            size="small"
+            icon={<FiCreditCard />}
+            onClick={() => navigate('/billing')}
+            className="bg-rose-500! text-white! border-rose-500! text-xs font-bold"
+          >
+            Upgrade Plan
+          </Button>
+        </div>
+      )}
+
       <div className="flex justify-end items-center gap-3">
         <Button
           type="default"
@@ -338,6 +422,13 @@ export const CampaignsPage = () => {
           onRun={handleExecuteRun}
         />
       )}
+
+      <SubscriptionRequiredModal
+        open={subModalOpen}
+        onClose={() => setSubModalOpen(false)}
+        title="Subscription Required to Run Campaign"
+        errorMessage={subErrorMessage || 'Your organization subscription has expired or has 0 remaining call seconds.'}
+      />
     </div>
   );
 };

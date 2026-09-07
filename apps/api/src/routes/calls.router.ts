@@ -5,6 +5,10 @@ import {
   BolnaConfigError,
   BolnaRequestError,
 } from '../services/bolna.client';
+import {
+  checkSubscriptionPreflightGuard,
+  SubscriptionError,
+} from '../services/subscription.service';
 
 export const callsRouter = Router();
 
@@ -24,15 +28,31 @@ callsRouter.post('/', async (req: OrgScopedRequestType, res) => {
     return;
   }
 
+  const organizationId = req.organization?.id;
+  if (!organizationId) {
+    res.status(400).json({ message: 'Organization context missing' });
+    return;
+  }
+
   try {
+    // 1. Subscription & Remaining Call Seconds Preflight Guard Check
+    await checkSubscriptionPreflightGuard(organizationId);
+
+    // 2. Trigger Call via Provider
     const result = await makeCall({ recipientPhoneNumber });
 
     console.log(
-      `[calls] org=${req.organization?.id} (${req.organization?.name}) triggered call, executionId=${result.executionId}`,
+      `[calls] org=${organizationId} (${req.organization?.name}) triggered call, executionId=${result.executionId}`,
     );
 
     res.status(202).json(result);
   } catch (error) {
+    if (error instanceof SubscriptionError) {
+      console.warn(`[calls] Subscription preflight check failed for org=${organizationId}:`, error.message);
+      res.status(error.statusCode || 402).json({ message: error.message, errorType: error.name });
+      return;
+    }
+
     if (error instanceof BolnaConfigError) {
       console.error('[calls] Bolna misconfigured:', error.message);
       res.status(500).json({ message: 'Calling service is misconfigured' });

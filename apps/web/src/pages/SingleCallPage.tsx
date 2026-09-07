@@ -1,9 +1,9 @@
-// SingleCallPage.tsx
-import { useState } from 'react';
-import { Card, Col, Row, message } from 'antd';
+import { useState, useEffect } from 'react';
+import { Card, Col, Row, message, Tag, Button } from 'antd';
 import { useQuery, useMutation } from '@apollo/client/react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
+import { FiAlertTriangle, FiCreditCard, FiArrowRight } from 'react-icons/fi';
 import {
   getAgentsDocument,
   getLeadsDocument,
@@ -16,11 +16,13 @@ import QueryLoading from '../component/query-loading/QueryLoading';
 import QueryError from '../component/query-error/QueryError';
 import SingleCallForm, { SingleCallFormValues } from '../forms/SingleCallForm';
 import LeadForm, { LeadFormValues } from '../forms/LeadForm';
+import { SubscriptionRequiredModal } from '../component';
 import {
   getZitadelOrgIdFromProfile,
   getZitadelUserIdFromProfile,
   OptionsDataType,
   getLanguageLabel,
+  apiClient,
 } from '../utils';
 
 const formatLeadLabel = (name?: string | null, phoneNumber?: string) => {
@@ -28,12 +30,6 @@ const formatLeadLabel = (name?: string | null, phoneNumber?: string) => {
   return `${displayName} · ${phoneNumber ?? ''}`;
 };
 
-/**
- * Maps the standalone lead-creation form's values into the shape the
- * insertLead mutation expects. Mirrors LeadsPage's toLeadChanges — if you
- * touch this mapping, update both, or better, move this into a shared
- * utils helper both pages import.
- */
 const toLeadChanges = (values: LeadFormValues) => ({
   phone_number: values.phoneNumber,
   name: values.fullName.trim() || null,
@@ -47,6 +43,24 @@ export const SingleCallPage = () => {
   const auth = useAuth();
   const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
   const [pendingLeadId, setPendingLeadId] = useState<string | undefined>();
+  const [subModalOpen, setSubModalOpen] = useState(false);
+  const [subErrorMessage, setSubErrorMessage] = useState('');
+  const [activeSub, setActiveSub] = useState<{
+    remaining_seconds: number;
+    status: string;
+    end_date: string;
+  } | null>(null);
+
+  useEffect(() => {
+    apiClient
+      .get('/api/subscriptions/active')
+      .then((res) => {
+        if (res.data?.subscription) {
+          setActiveSub(res.data.subscription);
+        }
+      })
+      .catch((err) => console.error('Error fetching subscription in SingleCallPage:', err));
+  }, []);
 
   const zitadelOrgId = getZitadelOrgIdFromProfile(auth.user?.profile);
   const zitadelUserId = getZitadelUserIdFromProfile(auth.user?.profile);
@@ -110,7 +124,20 @@ export const SingleCallPage = () => {
         }))
       : [];
 
+  const isSubPaused =
+    activeSub?.status === 'expired' ||
+    activeSub?.status === 'exhausted' ||
+    (activeSub?.remaining_seconds ?? 1) <= 0;
+
   const handlePlaceCall = async (values: SingleCallFormValues) => {
+    if (isSubPaused) {
+      setSubErrorMessage(
+        `Your subscription is ${activeSub?.status || 'exhausted'} with 0 remaining call seconds. Please upgrade to place calls.`,
+      );
+      setSubModalOpen(true);
+      return;
+    }
+
     try {
       const response = await placeSingleCall({
         variables: {
@@ -125,15 +152,35 @@ export const SingleCallPage = () => {
         navigate('/calls/logs');
       } else {
         const errorMsg = result?.message || 'Failed to place call';
-        message.error(errorMsg);
+        if (
+          errorMsg.toLowerCase().includes('subscription') ||
+          errorMsg.toLowerCase().includes('expired') ||
+          errorMsg.toLowerCase().includes('second')
+        ) {
+          setSubErrorMessage(errorMsg);
+          setSubModalOpen(true);
+        } else {
+          message.error(errorMsg);
+        }
         throw new Error(errorMsg);
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
       const errorMsg =
-        err instanceof Error
-          ? err.message
-          : 'An error occurred while placing the call';
-      message.error(errorMsg);
+        err?.message ||
+        err?.response?.data?.message ||
+        'An error occurred while placing the call';
+
+      if (
+        errorMsg.toLowerCase().includes('subscription') ||
+        errorMsg.toLowerCase().includes('expired') ||
+        errorMsg.toLowerCase().includes('second') ||
+        err?.response?.status === 402
+      ) {
+        setSubErrorMessage(errorMsg);
+        setSubModalOpen(true);
+      } else {
+        message.error(errorMsg);
+      }
       throw err;
     }
   };
@@ -174,8 +221,30 @@ export const SingleCallPage = () => {
 
   return (
     <Row className="w-full h-full" justify="center" align="middle">
-      <Col span={12}>
+      <Col span={14}>
         <Card className="bg-card! border border-sidebar-border! rounded-3xl! p-2 sm:p-4 shadow-xl w-full">
+          {/* Subscription Warning Banner */}
+          {isSubPaused && (
+            <div className="mb-4 p-3.5 rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-between text-xs">
+              <div className="flex items-center gap-2.5 text-rose-300">
+                <FiAlertTriangle className="text-rose-400 text-lg shrink-0" />
+                <div>
+                  <strong className="block text-rose-200">Subscription Expired or Balance 0s</strong>
+                  <span>Upgrade subscription to resume single calls.</span>
+                </div>
+              </div>
+              <Button
+                type="primary"
+                size="small"
+                icon={<FiCreditCard />}
+                onClick={() => navigate('/billing')}
+                className="bg-rose-500! text-white! border-rose-500! text-xs font-bold"
+              >
+                Upgrade Plan
+              </Button>
+            </div>
+          )}
+
           <SingleCallForm
             agentData={agentData}
             leadData={leadData}
@@ -193,6 +262,13 @@ export const SingleCallPage = () => {
         loading={insertLeadLoading}
         onCancel={handleCloseLeadForm}
         onSubmit={handleCreateLead}
+      />
+
+      <SubscriptionRequiredModal
+        open={subModalOpen}
+        onClose={() => setSubModalOpen(false)}
+        title="Subscription Required to Place Calls"
+        errorMessage={subErrorMessage || 'Your organization subscription has expired or has 0 remaining call seconds.'}
       />
     </Row>
   );

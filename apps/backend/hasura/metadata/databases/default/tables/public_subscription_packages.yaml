@@ -1,0 +1,16 @@
+table:
+  name: subscription_packages
+  schema: public
+array_relationships:
+  - name: subscriptions
+    using:
+      foreign_key_constraint_on:
+        column: package_id
+        table:
+          name: organization_subscriptions
+          schema: public
+select_permissions:
+  - role: anonymous
+    permission:
+      columns: '*'
+      filter: {}
