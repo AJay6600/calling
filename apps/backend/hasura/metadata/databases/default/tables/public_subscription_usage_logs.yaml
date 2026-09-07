@@ -1,0 +1,23 @@
+table:
+  name: subscription_usage_logs
+  schema: public
+object_relationships:
+  - name: organization_subscription
+    using:
+      foreign_key_constraint_on: organization_subscription_id
+  - name: organization
+    using:
+      foreign_key_constraint_on: organization_id
+  - name: call_log
+    using:
+      foreign_key_constraint_on: call_log_id
+select_permissions:
+  - role: anonymous
+    permission:
+      columns: '*'
+      filter: {}
+insert_permissions:
+  - role: anonymous
+    permission:
+      check: {}
+      columns: '*'

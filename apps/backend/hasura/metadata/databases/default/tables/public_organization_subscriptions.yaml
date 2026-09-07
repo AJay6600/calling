@@ -1,0 +1,34 @@
+table:
+  name: organization_subscriptions
+  schema: public
+object_relationships:
+  - name: organization
+    using:
+      foreign_key_constraint_on: organization_id
+  - name: package
+    using:
+      foreign_key_constraint_on: package_id
+array_relationships:
+  - name: usage_logs
+    using:
+      foreign_key_constraint_on:
+        column: organization_subscription_id
+        table:
+          name: subscription_usage_logs
+          schema: public
+select_permissions:
+  - role: anonymous
+    permission:
+      columns: '*'
+      filter: {}
+insert_permissions:
+  - role: anonymous
+    permission:
+      check: {}
+      columns: '*'
+update_permissions:
+  - role: anonymous
+    permission:
+      columns: '*'
+      filter: {}
+      check: {}

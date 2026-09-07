@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client/react';
 import {
@@ -33,6 +33,8 @@ import {
   FiLayers,
   FiUserPlus,
   FiEdit3,
+  FiAlertTriangle,
+  FiCreditCard,
 } from 'react-icons/fi';
 import {
   getCampaignByIdDocument,
@@ -50,7 +52,8 @@ import CampaignExecutionTimeline from '../component/CampaignExecutionTimeline';
 import RunCampaignModal from '../component/RunCampaignModal';
 import AddLeadsModal from '../component/AddLeadsModal';
 import EditCampaignModal, { EditCampaignFormValues } from '../component/EditCampaignModal';
-import { CallLogRecordType, LeadRecordType } from '../utils';
+import { SubscriptionRequiredModal } from '../component';
+import { CallLogRecordType, LeadRecordType, apiClient } from '../utils';
 
 const { Title, Text } = Typography;
 
@@ -79,6 +82,30 @@ export const CampaignDetailPage = () => {
   const [isRunModalOpen, setIsRunModalOpen] = useState(false);
   const [isAddLeadsModalOpen, setIsAddLeadsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  const [subModalOpen, setSubModalOpen] = useState(false);
+  const [subErrorMessage, setSubErrorMessage] = useState('');
+  const [activeSub, setActiveSub] = useState<{
+    remaining_seconds: number;
+    status: string;
+    end_date: string;
+  } | null>(null);
+
+  useEffect(() => {
+    apiClient
+      .get('/api/subscriptions/active')
+      .then((res) => {
+        if (res.data?.subscription) {
+          setActiveSub(res.data.subscription);
+        }
+      })
+      .catch((err) => console.error('Error fetching subscription in CampaignDetailPage:', err));
+  }, []);
+
+  const isSubPaused =
+    activeSub?.status === 'expired' ||
+    activeSub?.status === 'exhausted' ||
+    (activeSub?.remaining_seconds ?? 1) <= 0;
 
   const [activeTab, setActiveTab] = useState('call_logs');
   const [callLogsViewMode, setCallLogsViewMode] = useState<'timeline' | 'table'>('timeline');
@@ -111,7 +138,7 @@ export const CampaignDetailPage = () => {
 
   const [addCampaignLeads, { loading: addLeadsLoading }] = useMutation(addCampaignLeadsDocument, {
     onCompleted: () => {
-      message.success('Leads added to campaign');
+      message.success('Leads added to campaign successfully');
       refetch();
       setIsAddLeadsModalOpen(false);
     },
@@ -123,8 +150,10 @@ export const CampaignDetailPage = () => {
   const campaign = data?.campaigns_by_pk;
   if (!campaign) {
     return (
-      <div className="p-4 text-center">
-        <Text type="danger">Campaign not found</Text>
+      <div className="p-6">
+        <Card className="bg-card border-sidebar-border text-center py-12">
+          <Text type="danger">Campaign not found</Text>
+        </Card>
       </div>
     );
   }
@@ -622,6 +651,27 @@ export const CampaignDetailPage = () => {
         className="bg-card! border! border-sidebar-border! rounded-3xl! shadow-xl w-full"
         bodyStyle={{ padding: 24 }}
       >
+        {isSubPaused && (
+          <div className="mb-4 p-3.5 rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-between text-xs">
+            <div className="flex items-center gap-2.5 text-rose-300">
+              <FiAlertTriangle className="text-rose-400 text-lg shrink-0" />
+              <div>
+                <strong className="block text-rose-200">Subscription Expired or Balance 0s</strong>
+                <span>Upgrade subscription to run campaign calls.</span>
+              </div>
+            </div>
+            <Button
+              type="primary"
+              size="small"
+              icon={<FiCreditCard />}
+              onClick={() => navigate('/billing')}
+              className="bg-rose-500! text-white! border-rose-500! text-xs font-bold"
+            >
+              Upgrade Plan
+            </Button>
+          </div>
+        )}
+
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
           <div className="flex items-center gap-3">
             <Button
@@ -811,6 +861,13 @@ export const CampaignDetailPage = () => {
           onSubmit={handleEditSubmit}
         />
       )}
+
+      <SubscriptionRequiredModal
+        open={subModalOpen}
+        onClose={() => setSubModalOpen(false)}
+        title="Subscription Required to Run Campaign"
+        errorMessage={subErrorMessage || 'Your organization subscription has expired or has 0 remaining call seconds.'}
+      />
     </div>
   );
 };

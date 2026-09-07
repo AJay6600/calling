@@ -9,6 +9,7 @@ import {
 } from '../middleware/ensure-organization.middleware';
 import { callsRouter } from './calls.router';
 import { authRouter } from './auth.router';
+import { subscriptionsRouter } from './subscriptions.router';
 import { actionsRouter } from './actions.router';
 import { webhooksRouter } from './webhooks.router';
 
@@ -35,6 +36,13 @@ apiRouter.get(
 apiRouter.use('/calls', zitadelAuthMiddleware, ensureOrganizationMiddleware, callsRouter);
 
 apiRouter.use('/auth', zitadelAuthMiddleware, ensureOrganizationMiddleware, authRouter);
+
+apiRouter.use(
+  '/subscriptions',
+  zitadelAuthMiddleware,
+  ensureOrganizationMiddleware,
+  subscriptionsRouter,
+);
 
 apiRouter.use('/actions', actionsRouter);
 apiRouter.use('/', actionsRouter);

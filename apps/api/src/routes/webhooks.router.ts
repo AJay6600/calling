@@ -4,6 +4,7 @@ import {
   normalizeDisposition,
   updateLeadOnCallEnded,
 } from '../services/lead.service';
+import { deductCallDurationFromSubscription } from '../services/subscription.service';
 
 export const webhooksRouter = Router();
 
@@ -15,6 +16,8 @@ const UPDATE_CALL_LOG_MUTATION = `
     ) {
       affected_rows
       returning {
+        id
+        organization_id
         lead_id
         campaign_id
       }
@@ -105,7 +108,12 @@ webhooksRouter.post('/bolna', async (req: Request, res: Response) => {
     const result = await queryHasuraAdmin<{
       update_call_logs: {
         affected_rows: number;
-        returning: Array<{ lead_id: string | null; campaign_id: string | null }>;
+        returning: Array<{
+          id: string;
+          organization_id: string;
+          lead_id: string | null;
+          campaign_id: string | null;
+        }>;
       };
     }>(UPDATE_CALL_LOG_MUTATION, {
       executionId,
@@ -113,8 +121,24 @@ webhooksRouter.post('/bolna', async (req: Request, res: Response) => {
     });
 
     const returningItem = result.update_call_logs?.returning?.[0];
+    const callLogId = returningItem?.id;
+    const organizationId = returningItem?.organization_id;
     const leadId = returningItem?.lead_id;
     const campaignId = returningItem?.campaign_id;
+
+    // Deduct Call Duration Seconds from Organization Subscription
+    if (organizationId && duration > 0) {
+      try {
+        await deductCallDurationFromSubscription(
+          organizationId,
+          callLogId || null,
+          duration,
+          `Call execution duration deduction (${duration}s)`,
+        );
+      } catch (subErr) {
+        console.error('Error deducting call duration from subscription:', subErr);
+      }
+    }
 
     if (leadId) {
       try {
