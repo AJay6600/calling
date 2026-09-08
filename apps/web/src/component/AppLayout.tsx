@@ -32,9 +32,7 @@ import {
   apiClient,
   getZitadelOrgIdFromProfile,
   getZitadelUserIdFromProfile,
-  getUserRoleFromProfile,
-  setUserRoleOverride,
-  UserRole,
+  isUserAdmin,
 } from '../utils';
 
 const { Sider, Header, Content } = Layout;
@@ -155,8 +153,18 @@ const navConfig: NavItemConfig[] = [
   { key: '/billing', label: 'Billing', icon: FiCreditCard },
 ];
 
-const buildMenuItems = (currentPath: string): Required<MenuProps>['items'] => {
-  return navConfig.map((item) => {
+const buildMenuItems = (
+  currentPath: string,
+  isAdmin: boolean,
+): Required<MenuProps>['items'] => {
+  const filteredNavConfig = navConfig.filter((item) => {
+    if (item.key === '/billing' && !isAdmin) {
+      return false;
+    }
+    return true;
+  });
+
+  return filteredNavConfig.map((item) => {
     const isSelected = item.key === currentPath;
     const IconComponent = item.icon;
     const iconClassName = isSelected
@@ -273,23 +281,6 @@ const AppLayoutInner = () => {
   const zitadelOrgId = getZitadelOrgIdFromProfile(userProfile);
   const zitadelUserId = getZitadelUserIdFromProfile(userProfile);
 
-  const [currentRole, setCurrentRole] = useState<UserRole>(() =>
-    getUserRoleFromProfile(userProfile),
-  );
-
-  const toggleRole = () => {
-    const nextRole = currentRole === 'org_admin' ? 'org_member' : 'org_admin';
-    setUserRoleOverride(nextRole);
-    setCurrentRole(nextRole);
-    message.info(
-      `Role switched to: ${
-        nextRole === 'org_admin'
-          ? 'Organization Admin (org_admin)'
-          : 'Organization Member (org_member)'
-      }`,
-    );
-  };
-
   const { data: orgData } = useQuery(getOrganizationWithUserDocument, {
     variables: {
       zitadel_org_id: zitadelOrgId ?? '',
@@ -340,7 +331,8 @@ const AppLayoutInner = () => {
     'User';
   const email = userProfile?.email || '';
 
-  const menuItems = buildMenuItems(location.pathname);
+  const isAdmin = isUserAdmin(userProfile);
+  const menuItems = buildMenuItems(location.pathname, isAdmin);
 
   const remainingPct = subscription
     ? Math.min(
@@ -421,44 +413,21 @@ const AppLayoutInner = () => {
               </span>
             </div>
           )}
-          <div className="flex justify-between items-center">
-            <span className="text-muted-foreground">Active Role:</span>
-            <span
-              className={`m-0 text-[10px] font-bold px-2 py-0.5 rounded-md border ${
-                currentRole === 'org_admin'
-                  ? 'bg-purple-500/20 text-purple-300 border-purple-500/30'
-                  : 'bg-amber-500/20 text-amber-300 border-amber-500/30'
-              }`}
-            >
-              {currentRole === 'org_admin' ? 'Org Admin (org_admin)' : 'Org Member (org_member)'}
-            </span>
-          </div>
         </div>
-      </div>
-
-      {/* Role Switcher Demo Control */}
-      <div className="pt-2 border-t border-sidebar-border/80">
-        <Button
-          type="dashed"
-          size="small"
-          icon={<FiShield />}
-          onClick={toggleRole}
-          className="w-full text-xs font-semibold bg-secondary/30! text-muted-foreground! border-sidebar-border! hover:text-primary! hover:border-primary!"
-        >
-          Toggle Role: Switch to {currentRole === 'org_admin' ? 'Member (org_member)' : 'Admin (org_admin)'}
-        </Button>
       </div>
 
       {/* Action Footer */}
       <div className="pt-2 flex gap-2 border-t border-sidebar-border/80">
-        <Button
-          type="default"
-          icon={<FiCreditCard />}
-          onClick={() => navigate('/billing')}
-          className="flex-1 text-xs font-semibold bg-secondary/80! text-foreground! border-sidebar-border! hover:border-primary! hover:text-primary!"
-        >
-          Billing & Plan
-        </Button>
+        {isAdmin && (
+          <Button
+            type="default"
+            icon={<FiCreditCard />}
+            onClick={() => navigate('/billing')}
+            className="flex-1 text-xs font-semibold bg-secondary/80! text-foreground! border-sidebar-border! hover:border-primary! hover:text-primary!"
+          >
+            Billing & Plan
+          </Button>
+        )}
         <Button
           danger
           type="primary"
@@ -605,15 +574,17 @@ const AppLayoutInner = () => {
                   className="m-0!"
                 />
 
-                <Button
-                  type="primary"
-                  size="small"
-                  icon={<FiCreditCard />}
-                  onClick={() => navigate('/billing')}
-                  className="w-full mt-1 text-[11px] font-bold bg-primary/20! text-primary! border-primary/40! hover:bg-primary! hover:text-white! transition-all flex items-center justify-center gap-1 py-1 h-7"
-                >
-                  Billing & Plans <FiArrowUpRight />
-                </Button>
+                {isAdmin && (
+                  <Button
+                    type="primary"
+                    size="small"
+                    icon={<FiCreditCard />}
+                    onClick={() => navigate('/billing')}
+                    className="w-full mt-1 text-[11px] font-bold bg-primary/20! text-primary! border-primary/40! hover:bg-primary! hover:text-white! transition-all flex items-center justify-center gap-1 py-1 h-7"
+                  >
+                    Billing & Plans <FiArrowUpRight />
+                  </Button>
+                )}
               </div>
             ) : (
               <Tooltip
@@ -634,8 +605,12 @@ const AppLayoutInner = () => {
                 placement="right"
               >
                 <div
-                  onClick={() => navigate('/billing')}
-                  className="flex flex-col items-center justify-center p-2 rounded-xl bg-secondary/60 border border-sidebar-border/80 cursor-pointer hover:border-primary/50 transition-all text-center gap-1"
+                  onClick={() => {
+                    if (isAdmin) navigate('/billing');
+                  }}
+                  className={`flex flex-col items-center justify-center p-2 rounded-xl bg-secondary/60 border border-sidebar-border/80 transition-all text-center gap-1 ${
+                    isAdmin ? 'cursor-pointer hover:border-primary/50' : 'cursor-default'
+                  }`}
                 >
                   <FiClock className="text-emerald-400 text-base shrink-0" />
                   <span className="font-mono font-bold text-[10px] text-emerald-400 truncate max-w-[60px]">

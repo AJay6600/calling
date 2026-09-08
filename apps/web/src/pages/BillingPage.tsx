@@ -11,8 +11,8 @@ import {
   Modal,
   Table,
   Spin,
+  Result,
   message,
-  Tooltip,
 } from 'antd';
 import {
   FiCreditCard,
@@ -20,13 +20,12 @@ import {
   FiZap,
   FiCheckCircle,
   FiAlertTriangle,
-  FiDollarSign,
   FiShield,
   FiArrowUpRight,
   FiRefreshCw,
   FiLock,
 } from 'react-icons/fi';
-import { apiClient, getUserRoleFromProfile } from '../utils';
+import { apiClient, isUserAdmin } from '../utils';
 
 const { Title, Text } = Typography;
 
@@ -73,8 +72,7 @@ interface UsageLogType {
 
 export const BillingPage = () => {
   const auth = useAuth();
-  const userRole = getUserRoleFromProfile(auth.user?.profile);
-  const isOrgAdmin = userRole === 'org_admin';
+  const isAdmin = isUserAdmin(auth.user?.profile);
 
   const [loading, setLoading] = useState<boolean>(true);
   const [activeSub, setActiveSub] = useState<ActiveSubscriptionType | null>(null);
@@ -114,10 +112,6 @@ export const BillingPage = () => {
 
   const handleSubscribe = async () => {
     if (!selectedPkg) return;
-    if (!isOrgAdmin) {
-      message.error('Package purchasing is restricted to Organization Admins (org_admin).');
-      return;
-    }
 
     setSubmitting(true);
     try {
@@ -135,6 +129,23 @@ export const BillingPage = () => {
       setSubmitting(false);
     }
   };
+
+  if (!isAdmin) {
+    return (
+      <div className="flex h-full w-full min-h-[400px] items-center justify-center p-6">
+        <Result
+          status="403"
+          title="Access Restricted"
+          subTitle="Only Organization Administrators (admin role) can view and manage billing & subscription plans."
+          extra={
+            <Button type="primary" href="/">
+              Return to Dashboard
+            </Button>
+          }
+        />
+      </div>
+    );
+  }
 
   if (loading) {
     return (
@@ -218,9 +229,6 @@ export const BillingPage = () => {
                 <Title level={3} className="m-0! text-foreground!">
                   Organization Subscription & Call Balance
                 </Title>
-                <Tag color={isOrgAdmin ? 'purple' : 'amber'} className="m-0 text-[11px] font-bold">
-                  {isOrgAdmin ? 'Org Admin' : 'Org Member'}
-                </Tag>
               </div>
               <Text className="text-xs text-muted-foreground! block mt-1">
                 Manage allocated call seconds, active subscription packages, unit usage deductions, and billing ledgers.
@@ -337,19 +345,6 @@ export const BillingPage = () => {
           </div>
         </div>
 
-        {/* Non-Admin Restricted Permission Notice */}
-        {!isOrgAdmin && (
-          <div className="mb-4 p-3.5 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center gap-3 text-xs text-amber-200">
-            <FiLock className="text-amber-400 text-xl shrink-0" />
-            <div>
-              <strong className="block text-amber-200">Admin Permission Required to Purchase Packages</strong>
-              <span>
-                Package selection & plan purchasing are restricted to Organization Admins (<code className="bg-amber-500/20 px-1 py-0.5 rounded font-mono">org_admin</code>). As an Organization Member, you can monitor remaining seconds and usage history. Contact your org administrator to upgrade.
-              </span>
-            </div>
-          </div>
-        )}
-
         {(() => {
           const availablePackages = packages.filter((pkg) => {
             const isFreeTrialPkg =
@@ -416,16 +411,6 @@ export const BillingPage = () => {
                         <div className="w-full mt-3 py-2 px-3 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 font-bold text-xs text-center flex items-center justify-center gap-2 shadow-inner">
                           <FiCheckCircle className="text-sm" /> Current Active Plan
                         </div>
-                      ) : !isOrgAdmin ? (
-                        <Tooltip title="Package purchasing is restricted to Organization Admins (org_admin)">
-                          <Button
-                            disabled
-                            icon={<FiLock />}
-                            className="w-full mt-3 text-xs font-semibold bg-secondary/50! text-muted-foreground! border-sidebar-border! cursor-not-allowed"
-                          >
-                            Admin Required to Subscribe
-                          </Button>
-                        </Tooltip>
                       ) : (
                         <Button
                           type="primary"

@@ -35,7 +35,6 @@ const attachRequestInterceptor = () => {
   interceptorId = apiClient.interceptors.request.use((config) => {
     const accessToken = getAccessToken();
     const zitadelOrgId = getZitadelOrgId();
-    const userRole = localStorage.getItem('user_role_override') || 'org_admin';
 
     if (accessToken !== undefined && accessToken !== '') {
       config.headers.Authorization = `Bearer ${accessToken}`;
@@ -46,8 +45,6 @@ const attachRequestInterceptor = () => {
       config.headers['x-hasura-org-id'] = zitadelOrgId;
       config.headers['x-hasura-zitadel-org-id'] = zitadelOrgId;
     }
-
-    config.headers[USER_ROLE_HEADER] = userRole;
 
     return config;
   });
