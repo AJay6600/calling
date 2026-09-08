@@ -129,18 +129,9 @@ subscriptionsRouter.get('/packages', async (_req, res) => {
 subscriptionsRouter.post('/subscribe', async (req: OrgScopedRequestType, res) => {
   const organizationId = req.organization?.id;
   const packageId: unknown = req.body?.packageId;
-  const userRole = (req.headers['x-user-role'] as string) || 'org_admin';
 
   if (!organizationId) {
     res.status(400).json({ message: 'Organization context missing' });
-    return;
-  }
-
-  if (userRole !== 'org_admin') {
-    res.status(403).json({
-      message:
-        'Package purchasing and plan upgrades are restricted to Organization Admins (org_admin). Please contact your administrator to purchase subscription plans.',
-    });
     return;
   }
 
