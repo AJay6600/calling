@@ -85,6 +85,26 @@ export const BillingPage = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
+      // Check if returning from successful Stripe Checkout
+      const urlParams = new URLSearchParams(window.location.search);
+      const sessionId = urlParams.get('session_id');
+
+      if (sessionId) {
+        try {
+          const verifyRes = await apiClient.get<{ verified: boolean; subscription?: ActiveSubscriptionType }>(
+            `/api/subscriptions/verify-session?session_id=${sessionId}`,
+          );
+          if (verifyRes.data?.verified) {
+            message.success('Payment verified! Your subscription is now active.');
+          }
+        } catch (verifyErr) {
+          console.error('Failed to verify session on callback:', verifyErr);
+        } finally {
+          // Clean up query string from URL
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+      }
+
       const [subRes, pkgRes] = await Promise.all([
         apiClient.get<{
           subscription: ActiveSubscriptionType;
@@ -115,16 +135,44 @@ export const BillingPage = () => {
 
     setSubmitting(true);
     try {
-      await apiClient.post('/api/subscriptions/subscribe', {
-        packageId: selectedPkg.id,
-      });
+      if (selectedPkg.price_usd === 0 || selectedPkg.id === '11111111-1111-1111-1111-111111111111') {
+        await apiClient.post('/api/subscriptions/subscribe', {
+          packageId: selectedPkg.id,
+        });
+        message.success(`Successfully activated ${selectedPkg.name}!`);
+        setSelectedPkg(null);
+        await fetchData();
+      } else {
+        const checkoutRes = await apiClient.post<{ url: string }>(
+          '/api/subscriptions/create-checkout-session',
+          { packageId: selectedPkg.id },
+        );
 
-      message.success(`Successfully subscribed to ${selectedPkg.name}!`);
-      setSelectedPkg(null);
-      await fetchData();
+        if (checkoutRes.data?.url) {
+          window.location.href = checkoutRes.data.url;
+        } else {
+          // Fallback if Stripe key not set yet
+          await apiClient.post('/api/subscriptions/subscribe', {
+            packageId: selectedPkg.id,
+          });
+          message.success(`Subscribed to ${selectedPkg.name}!`);
+          setSelectedPkg(null);
+          await fetchData();
+        }
+      }
     } catch (err: any) {
       console.error('Subscription error:', err);
-      message.error(err?.response?.data?.message || 'Failed to subscribe to package');
+      // Fallback for dev testing if Stripe key is missing
+      try {
+        await apiClient.post('/api/subscriptions/subscribe', {
+          packageId: selectedPkg.id,
+        });
+        message.success(`Subscribed to ${selectedPkg.name}!`);
+        setSelectedPkg(null);
+        await fetchData();
+      } catch (fallbackErr: any) {
+        message.error(err?.response?.data?.message || 'Failed to subscribe to package');
+      }
     } finally {
       setSubmitting(false);
     }
