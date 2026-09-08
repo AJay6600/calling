@@ -39,7 +39,24 @@ export interface OrganizationSubscriptionType {
 
 const GET_ACTIVE_SUBSCRIPTION_QUERY = `
   query GetActiveSubscription($organizationId: uuid!) {
-    organization_subscriptions(
+    active_subs: organization_subscriptions(
+      where: { organization_id: { _eq: $organizationId }, status: { _eq: "active" } }
+      order_by: { created_at: desc }
+      limit: 1
+    ) {
+      id
+      organization_id
+      package_id
+      allocated_seconds
+      remaining_seconds
+      status
+      start_date
+      end_date
+      package {
+        name
+      }
+    }
+    all_subs: organization_subscriptions(
       where: { organization_id: { _eq: $organizationId } }
       order_by: { created_at: desc }
       limit: 1
@@ -130,10 +147,11 @@ export async function getOrganizationActiveSubscription(
   organizationId: string,
 ): Promise<OrganizationSubscriptionType> {
   const data = await queryHasuraAdmin<{
-    organization_subscriptions: OrganizationSubscriptionType[];
+    active_subs: OrganizationSubscriptionType[];
+    all_subs: OrganizationSubscriptionType[];
   }>(GET_ACTIVE_SUBSCRIPTION_QUERY, { organizationId });
 
-  let sub = data?.organization_subscriptions?.[0];
+  let sub = data?.active_subs?.[0] || data?.all_subs?.[0];
 
   // If no subscription exists for this organization, auto-provision initial free trial (6,000s = 100 mins)
   if (!sub) {

@@ -205,3 +205,127 @@ webhooksRouter.post('/bolna', async (req: Request, res: Response) => {
     res.status(500).json({ message: error?.message || 'Internal Server Error' });
   }
 });
+
+// POST /api/webhooks/stripe - Stripe Payment Webhook
+webhooksRouter.post('/stripe', async (req: Request, res: Response) => {
+  const stripeSecretKey = process.env['STRIPE_SECRET_KEY'];
+  const webhookSecret = process.env['STRIPE_WEBHOOK_SECRET'];
+
+  if (!stripeSecretKey || stripeSecretKey === '') {
+    res.status(400).json({ message: 'STRIPE_SECRET_KEY not set' });
+    return;
+  }
+
+  const sig = req.headers['stripe-signature'];
+
+  try {
+    const { default: Stripe } = await import('stripe');
+    const stripe = new Stripe(stripeSecretKey, { apiVersion: '2025-02-24.acacia' as any });
+
+    let event: any = req.body;
+
+    if (webhookSecret && sig && typeof sig === 'string') {
+      try {
+        const rawBody = (req as any).rawBody || JSON.stringify(req.body);
+        event = stripe.webhooks.constructEvent(rawBody, sig, webhookSecret);
+      } catch (err: any) {
+        console.error('[stripe-webhook] Signature verification failed:', err.message);
+        res.status(400).send(`Webhook Signature Error: ${err.message}`);
+        return;
+      }
+    }
+
+    if (event.type === 'checkout.session.completed') {
+      const session = event.data.object;
+      const organizationId = session.metadata?.organizationId;
+      const packageId = session.metadata?.packageId;
+      const allocatedSecondsStr = session.metadata?.allocatedSeconds;
+
+      if (organizationId && packageId && allocatedSecondsStr) {
+        const allocatedSeconds = parseInt(allocatedSecondsStr, 10);
+        const startDate = new Date();
+        const endDate = new Date();
+        endDate.setDate(endDate.getDate() + 30);
+
+        const subResult = await queryHasuraAdmin<{
+          insert_organization_subscriptions_one: {
+            id: string;
+            organization_id: string;
+          };
+        }>(
+          `
+          mutation ActivateStripeSubscription(
+            $organizationId: uuid!
+            $packageId: uuid!
+            $allocatedSeconds: Int!
+            $startDate: timestamptz!
+            $endDate: timestamptz!
+          ) {
+            insert_organization_subscriptions_one(
+              object: {
+                organization_id: $organizationId
+                package_id: $packageId
+                allocated_seconds: $allocatedSeconds
+                remaining_seconds: $allocatedSeconds
+                status: "active"
+                start_date: $startDate
+                end_date: $endDate
+              }
+            ) {
+              id
+              organization_id
+            }
+          }
+        `,
+          {
+            organizationId,
+            packageId,
+            allocatedSeconds,
+            startDate: startDate.toISOString(),
+            endDate: endDate.toISOString(),
+          },
+        );
+
+        const subId = subResult.insert_organization_subscriptions_one?.id;
+
+        if (subId) {
+          await queryHasuraAdmin(
+            `
+            mutation LogStripePayment(
+              $subscriptionId: uuid!
+              $organizationId: uuid!
+              $balanceAfter: Int!
+              $description: String
+            ) {
+              insert_subscription_usage_logs_one(
+                object: {
+                  organization_subscription_id: $subscriptionId
+                  organization_id: $organizationId
+                  seconds_deducted: 0
+                  balance_after: $balanceAfter
+                  description: $description
+                }
+              ) {
+                id
+              }
+            }
+          `,
+            {
+              subscriptionId: subId,
+              organizationId,
+              balanceAfter: allocatedSeconds,
+              description: `Stripe Checkout Payment Complete (${allocatedSeconds}s credited)`,
+            },
+          );
+        }
+
+        console.log(`[stripe-webhook] Successfully credited ${allocatedSeconds}s to Org ${organizationId}`);
+      }
+    }
+
+    res.json({ received: true });
+  } catch (error: any) {
+    console.error('[stripe-webhook] Error processing webhook:', error);
+    res.status(500).json({ message: error?.message || 'Webhook Handler Error' });
+  }
+});
