@@ -2,6 +2,7 @@ type MakeCallParamsType = {
   recipientPhoneNumber: string;
   bolnaAgentId?: string;
   bolnaApiKey?: string;
+  userData?: Record<string, unknown>;
 };
 
 type BolnaCallResponseType = {
@@ -44,16 +45,22 @@ export const makeCall = async (
 
   assertBolnaConfigured(bolnaApiKey, bolnaAgentId);
 
+  const requestBody: Record<string, unknown> = {
+    agent_id: bolnaAgentId,
+    recipient_phone_number: params.recipientPhoneNumber,
+  };
+
+  if (params.userData && Object.keys(params.userData).length > 0) {
+    requestBody['user_data'] = params.userData;
+  }
+
   const response = await fetch(`${bolnaBaseUrl}/call`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${bolnaApiKey}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      agent_id: bolnaAgentId,
-      recipient_phone_number: params.recipientPhoneNumber,
-    }),
+    body: JSON.stringify(requestBody),
   });
 
   const body: unknown = await response.json().catch(() => null);

@@ -39,7 +39,10 @@ callsRouter.post('/', async (req: OrgScopedRequestType, res) => {
     await checkSubscriptionPreflightGuard(organizationId);
 
     // 2. Trigger Call via Provider
-    const result = await makeCall({ recipientPhoneNumber });
+    const result = await makeCall({
+      recipientPhoneNumber,
+      userData: req.body?.userData,
+    });
 
     console.log(
       `[calls] org=${organizationId} (${req.organization?.name}) triggered call, executionId=${result.executionId}`,

@@ -1,6 +1,13 @@
 version: 3
-endpoint: http://localhost:8080
-admin_secret: myadminsecretkey
+
+# Local Hasura:
+# endpoint: http://localhost:8080
+# admin_secret: myadminsecretkey
+
+# Production Cloud Hasura:
+endpoint: https://meet-dolphin-95.hasura.app
+admin_secret: jWGe7CQp2sE5aIz0or7dV3YPMSRNqtVTgr19S4mn1ivfXoBp9lToLo1RHOgnQmMV
+
 metadata_directory: metadata
 migrations_directory: migrations
 seeds_directory: seeds

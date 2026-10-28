@@ -32,7 +32,10 @@ type AgentAndLeadQueryResult = {
   } | null;
   leads_by_pk: {
     id: string;
+    name?: string | null;
     phone_number: string;
+    email?: string | null;
+    company_name?: string | null;
     organization_id: string;
     zitadel_org_id: string;
   } | null;
@@ -53,7 +56,10 @@ const GET_AGENT_AND_LEAD_QUERY = `
     }
     leads_by_pk(id: $leadId) {
       id
+      name
       phone_number
+      email
+      company_name
       organization_id
       zitadel_org_id
     }
@@ -135,10 +141,21 @@ actionsRouter.post('/place-single-call', async (req: Request, res: Response) => 
       return;
     }
 
+    const leadName = lead.name?.trim() || '';
+    const userData: Record<string, unknown> = {
+      lead_name: leadName,
+      name: leadName,
+      customer_name: leadName,
+      recipient_name: leadName,
+    };
+    if (lead.company_name) userData['company_name'] = lead.company_name;
+    if (lead.email) userData['email'] = lead.email;
+
     const result = await makeCall({
       recipientPhoneNumber,
       bolnaAgentId,
       bolnaApiKey,
+      userData,
     });
 
     const organizationId = agent.organization?.id ?? agent.organization_id;
@@ -371,10 +388,21 @@ actionsRouter.post('/place-bulk-call', async (req: Request, res: Response) => {
       }
 
       try {
+        const leadName = leadInput.name?.trim() || '';
+        const userData: Record<string, unknown> = {
+          lead_name: leadName,
+          name: leadName,
+          customer_name: leadName,
+          recipient_name: leadName,
+        };
+        if (leadInput.companyName) userData['company_name'] = leadInput.companyName;
+        if (leadInput.email) userData['email'] = leadInput.email;
+
         const result = await makeCall({
           recipientPhoneNumber,
           bolnaAgentId,
           bolnaApiKey,
+          userData,
         });
 
         if (organizationId && zitadelOrgId) {
@@ -497,7 +525,10 @@ const GET_CAMPAIGN_DETAILS_QUERY = `
         variables
         lead {
           id
+          name
           phone_number
+          email
+          company_name
         }
       }
     }
@@ -689,7 +720,10 @@ actionsRouter.post('/run-campaign', async (req: Request, res: Response) => {
           variables: Record<string, unknown> | null;
           lead: {
             id: string;
+            name?: string | null;
             phone_number: string;
+            email?: string | null;
+            company_name?: string | null;
           };
         }>;
       } | null;
@@ -747,11 +781,26 @@ actionsRouter.post('/run-campaign', async (req: Request, res: Response) => {
       const recipientPhoneNumber = item.lead?.phone_number;
       if (!recipientPhoneNumber) continue;
 
+      const leadName =
+        (item.variables?.['name'] as string)?.trim() ||
+        (item.variables?.['lead_name'] as string)?.trim() ||
+        item.lead?.name?.trim() ||
+        '';
+
+      const userData: Record<string, unknown> = {
+        ...(item.variables || {}),
+        lead_name: leadName,
+        name: leadName,
+        customer_name: leadName,
+        recipient_name: leadName,
+      };
+
       try {
         const result = await makeCall({
           recipientPhoneNumber,
           bolnaAgentId,
           bolnaApiKey,
+          userData,
         });
 
         await queryHasuraAdmin(INSERT_CALL_LOG_MUTATION, {
