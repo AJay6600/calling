@@ -1,4 +1,4 @@
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
@@ -7,7 +7,7 @@ COPY package.json yarn.lock .yarnrc ./
 COPY .yarn .yarn
 
 # Install all dependencies
-RUN yarn install --frozen-lockfile
+RUN yarn install --frozen-lockfile --ignore-engines
 
 # Copy root configs and source files needed for build
 COPY nx.json tsconfig.base.json eslint.config.mjs ./
@@ -18,7 +18,7 @@ COPY libs libs
 RUN npx nx build api --configuration=production
 
 # Production runner stage
-FROM node:20-alpine AS runner
+FROM node:22-alpine AS runner
 
 WORKDIR /app
 ENV NODE_ENV=production
